@@ -13,7 +13,6 @@
  '(desktop-save (quote ask-if-new))
  '(desktop-save-mode t)
  '(display-time-mode t)
- '(font-use-system-font t)
  '(haskell-font-lock-haddock t)
  '(haskell-font-lock-symbols t)
  '(indent-tabs-mode nil)
@@ -68,7 +67,7 @@
 (add-hook 'python-mode-hook   'hs-minor-mode)
 
 (tabbar-mode)
-(global-set-key [f5] 'sr-speedbar-toggle)
+(global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'pylint)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -81,18 +80,6 @@
 ;;     (define-key ropemacs-local-keymap (kbd "C-t") 'rope-code-assist)))
 ;; (global-set-key (kbd "M-/") 'dabbrev-expand)
 ;;     (define-key minibuffer-local-map (kbd "M-/") 'dabbrev-expand)
-
-(add-to-list 'load-path "~/.emacs.d/el-get")
-(require 'el-get)
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
-
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-(el-get 'sync)
 
 
 ;;===== PyFlakes
@@ -121,3 +108,9 @@
 
 (setq-default fill-column 80)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 113 :width normal)))))
