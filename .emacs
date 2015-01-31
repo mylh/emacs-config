@@ -1,6 +1,3 @@
-(when window-system (set-frame-position (selected-frame) 1920 0))
-(when window-system (set-frame-size (selected-frame) 280 80))
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -63,6 +60,7 @@
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 
 (add-hook 'python-mode-hook   'hs-minor-mode)
 
@@ -71,6 +69,8 @@
 (global-set-key [f9] 'pylint)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+(require 'frame-restore)
 
 
 ;; (require 'pymacs)
@@ -114,3 +114,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 113 :width normal)))))
+
+(when window-system (set-frame-position (selected-frame) 0 0))
+(when window-system (set-frame-size (selected-frame) 207 60))
+
