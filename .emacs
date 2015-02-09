@@ -21,12 +21,9 @@
  '(sgml-basic-offset 4)
  '(show-paren-mode t)
  '(size-indication-mode t)
+ '(speedbar-default-position (quote right))
  '(speedbar-show-unknown-files t)
  '(speedbar-supported-extension-expressions (quote ("\\.\\(inc\\|php[s34]?\\)" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".f\\(90\\|77\\|or\\)?" ".ada" ".p[lm]" ".tcl" ".m" ".scm" ".phtml" ".css" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".hs" ".st")))
- '(sr-speedbar-auto-refresh nil)
- '(sr-speedbar-skip-other-window-p nil)
- '(sr-speedbar-width-console 30)
- '(sr-speedbar-width-x 30)
  '(tab-width 4)
  '(tabbar-cycle-scope (quote tabs))
  '(web-mode-code-indent-offset 4)
@@ -64,23 +61,24 @@
 (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 
 (add-hook 'python-mode-hook   'hs-minor-mode)
 
 (tabbar-mode)
-(global-set-key [f5] 'sr-speedbar-toggle)
+(global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'pylint)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
 
-;; (require 'pymacs)
-;; (pymacs-load "ropemacs" "rope-")
-;; (add-hook 'python-mode-hook 'jedi:setup)
-;; (add-hook 'python-mode-hook (lambda ()
-;;     (define-key ropemacs-local-keymap (kbd "C-t") 'rope-code-assist)))
-;; (global-set-key (kbd "M-/") 'dabbrev-expand)
-;;     (define-key minibuffer-local-map (kbd "M-/") 'dabbrev-expand)
+;;(require 'pymacs)
+;;(pymacs-load "ropemacs" "rope-")
+(add-hook 'python-mode-hook 'jedi:setup)
+;;(add-hook 'python-mode-hook (lambda ()
+;;                              (define-key ropemacs-local-keymap (kbd "C-t") 'rope-code-assist)))
+;;(global-set-key (kbd "M-SPC") 'dabbrev-expand)
+;;(define-key minibuffer-local-map (kbd "M-SPC") 'dabbrev-expand)
 
 (add-to-list 'load-path "~/.emacs.d/el-get")
 (require 'el-get)
@@ -121,3 +119,9 @@
 
 (setq-default fill-column 80)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 122 :width normal)))))
