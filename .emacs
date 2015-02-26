@@ -17,6 +17,7 @@
  '(sgml-basic-offset 4)
  '(show-paren-mode t)
  '(size-indication-mode t)
+ '(speedbar-frame-parameters (quote ((minibuffer) (width . 25) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
  '(speedbar-show-unknown-files t)
  '(speedbar-supported-extension-expressions (quote ("\\.\\(inc\\|php[s34]?\\)" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".f\\(90\\|77\\|or\\)?" ".ada" ".p[lm]" ".tcl" ".m" ".scm" ".phtml" ".css" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".hs" ".st")))
  '(sr-speedbar-auto-refresh nil)
@@ -71,7 +72,7 @@
 (put 'upcase-region 'disabled nil)
 
 (require 'frame-restore)
-
+(require 'tramp)
 
 ;; (require 'pymacs)
 ;; (pymacs-load "ropemacs" "rope-")
