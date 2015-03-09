@@ -92,9 +92,6 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-(require 'frame-restore)
-(require 'tramp)
-
 ;;(require 'pymacs)
 ;;(pymacs-load "ropemacs" "rope-")
 (add-hook 'python-mode-hook 'jedi:setup)
