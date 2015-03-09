@@ -28,7 +28,6 @@
  '(tab-width 4)
  '(tabbar-cycle-scope (quote tabs))
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style (quote forward) nil (uniquify))
  '(web-mode-code-indent-offset 4)
  '(web-mode-css-indent-offset 4)
  '(web-mode-enable-string-interpolation t)
@@ -50,12 +49,15 @@
 (add-to-list 'load-path "~/.emacs.d/")
 
 ; list the packages you want
-(setq package-list '(jinja2-mode js2-mode less-css-mode))
+(setq package-list '(jinja2-mode js2-mode less-css-mode jedi yaml-mode))
 
 (when (>= emacs-major-version 24)
   (require 'package)
   (package-initialize)
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/") t)
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
   )
 
 
@@ -82,7 +84,7 @@
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 
-(add-hook 'python-mode-hook   'hs-minor-mode)
+(add-hook 'python-mode-hook 'hs-minor-mode)
 
 (tabbar-mode)
 (global-set-key [f5] 'speedbar)
