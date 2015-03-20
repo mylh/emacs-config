@@ -61,13 +61,7 @@
   )
 
 
-;; ; list the repositories containing them
-;; (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
-;;                          ("gnu" . "http://elpa.gnu.org/packages/")
-;;                          ("marmalade" . "http://marmalade-repo.org/packages/")))
-
-;; ; activate all the packages (in particular autoloads)
-;; (package-initialize)
+(package-initialize)
 
 ; fetch the list of packages available 
 (unless package-archive-contents
@@ -79,30 +73,25 @@
     (package-install package)))
 
 
-
+(require 'python-mode)
+(setq-default fill-column 80)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
-
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-hook 'python-mode-hook 'hs-minor-mode)
+(add-hook 'python-mode-hook 'flymake-mode)
+(add-hook 'python-mode-hook 'turn-on-auto-fill)
+(add-hook 'python-mode-hook 'jedi:setup)
 
-(tabbar-mode)
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'pylint)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-;;(require 'pymacs)
-;;(pymacs-load "ropemacs" "rope-")
-(add-hook 'python-mode-hook 'jedi:setup)
-;;(add-hook 'python-mode-hook (lambda ()
-;;                              (define-key ropemacs-local-keymap (kbd "C-t") 'rope-code-assist)))
-;;(global-set-key (kbd "M-SPC") 'dabbrev-expand)
-;;(define-key minibuffer-local-map (kbd "M-SPC") 'dabbrev-expand)
-
 
 ;;===== PyFlakes
-;; code checking via pyflakes+flymake
+;;code checking via pyflakes+flymake
 (when (load "flymake" t)
   (defun flymake-pyflakes-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -110,12 +99,12 @@
            (local-file (file-relative-name
                         temp-file
                         (file-name-directory buffer-file-name))))
-      (list "pyflakes" (list local-file))))
+      (list "pycheckers" (list local-file))))
   
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pyflakes-init)))
 
-(add-hook 'find-file-hook 'flymake-find-file-hook)
+;;(add-hook 'find-file-hook 'flymake-find-file-hook)
 
 ;;===== HtmlFlymakes
 (defun flymake-xml-init ()
@@ -124,9 +113,6 @@
               (flymake-init-create-temp-buffer-copy 
                'flymake-create-temp-inplace))))
 
-
-(setq-default fill-column 80)
-(add-hook 'python-mode-hook 'turn-on-auto-fill)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -137,4 +123,5 @@
 (when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
 
+(tabbar-mode)
 (ido-mode)
