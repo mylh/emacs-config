@@ -46,10 +46,10 @@
                      (documentation . "Support for Cyrillic CP1251."))
  '("Cyrillic"))
 
-(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(jinja2-mode js2-mode less-css-mode jedi yaml-mode))
+(setq package-list '(jinja2-mode js2-mode less-css-mode jedi yaml-mode fill-column-indicator))
 
 (when (>= emacs-major-version 24)
   (require 'package)
@@ -74,7 +74,7 @@
 
 
 (require 'python-mode)
-(setq-default fill-column 80)
+(setq-default fill-column 79)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
@@ -82,6 +82,7 @@
 (add-hook 'python-mode-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'flymake-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
+(add-hook 'python-mode-hook 'fci-mode)
 (add-hook 'python-mode-hook 'jedi:setup)
 
 (global-set-key [f5] 'speedbar)
@@ -123,5 +124,4 @@
 (when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
 
-(tabbar-mode)
 (ido-mode)
