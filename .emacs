@@ -49,7 +49,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(python-mode jinja2-mode js2-mode less-css-mode jedi yaml-mode))
+(setq package-list '(python-mode jinja2-mode js2-mode less-css-mode jedi yaml-mode fill-column-indicator))
 
 (when (>= emacs-major-version 24)
   (require 'package)
@@ -82,6 +82,7 @@
 (add-hook 'python-mode-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'flymake-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
+(add-hook 'python-mode-hook 'fci-mode)
 (add-hook 'python-mode-hook 'jedi:setup)
 
 (global-set-key [f5] 'speedbar)
@@ -120,8 +121,44 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 113 :width normal)))))
 
-(when window-system (set-frame-position (selected-frame) 0 0))
+;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
 
 ;;(tabbar-mode)
 (ido-mode)
+
+;;----------------------------------------------------------------------------
+;; Fill column indicator
+;;----------------------------------------------------------------------------
+(when (eval-when-compile (> emacs-major-version 23))
+  (defun sanityinc/prog-mode-fci-settings ()
+    (turn-on-fci-mode)
+    (when show-trailing-whitespace
+      (set (make-local-variable 'whitespace-style) '(face trailing))
+      (whitespace-mode 1)))
+
+  ;;(add-hook 'prog-mode-hook 'sanityinc/prog-mode-fci-settings)
+
+  (defun sanityinc/fci-enabled-p ()
+    (and (boundp 'fci-mode) fci-mode))
+
+  (defvar sanityinc/fci-mode-suppressed nil)
+  (defadvice popup-create (before suppress-fci-mode activate)
+    "Suspend fci-mode while popups are visible"
+    (let ((fci-enabled (sanityinc/fci-enabled-p)))
+      (when fci-enabled
+        (set (make-local-variable 'sanityinc/fci-mode-suppressed) fci-enabled)
+        (turn-off-fci-mode))))
+  (defadvice popup-delete (after restore-fci-mode activate)
+    "Restore fci-mode when all popups have closed"
+    (when (and sanityinc/fci-mode-suppressed
+               (null popup-instances))
+      (setq sanityinc/fci-mode-suppressed nil)
+      (turn-on-fci-mode)))
+
+  ;; Regenerate fci-mode line images after switching themes
+  (defadvice enable-theme (after recompute-fci-face activate)
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (sanityinc/fci-enabled-p)
+          (turn-on-fci-mode))))))
