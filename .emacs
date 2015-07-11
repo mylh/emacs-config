@@ -46,10 +46,10 @@
                      (documentation . "Support for Cyrillic CP1251."))
  '("Cyrillic"))
 
-(add-to-list 'load-path "~/.emacs.d/")
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(jinja2-mode js2-mode less-css-mode jedi yaml-mode))
+(setq package-list '(python-mode jinja2-mode js2-mode less-css-mode jedi yaml-mode))
 
 (when (>= emacs-major-version 24)
   (require 'package)
@@ -123,5 +123,5 @@
 (when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
 
-(tabbar-mode)
+;;(tabbar-mode)
 (ido-mode)
