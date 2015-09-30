@@ -3,10 +3,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
+ '(ansi-color-names-vector
+   ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
  '(c-basic-offset 4)
  '(column-number-mode t)
  '(custom-enabled-themes (quote (wombat)))
+ '(desktop-restore-frames t)
  '(desktop-save (quote ask-if-new))
  '(desktop-save-mode t)
  '(display-time-mode t)
@@ -18,9 +20,19 @@
  '(show-paren-mode t)
  '(size-indication-mode t)
  '(speedbar-default-position (quote right))
- '(speedbar-frame-parameters (quote ((minibuffer) (width . 25) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
+ '(speedbar-frame-parameters
+   (quote
+    ((minibuffer)
+     (width . 25)
+     (border-width . 0)
+     (menu-bar-lines . 0)
+     (tool-bar-lines . 0)
+     (unsplittable . t)
+     (left-fringe . 0))))
  '(speedbar-show-unknown-files t)
- '(speedbar-supported-extension-expressions (quote ("\\.\\(inc\\|php[s34]?\\)" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".f\\(90\\|77\\|or\\)?" ".ada" ".p[lm]" ".tcl" ".m" ".scm" ".phtml" ".css" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".hs" ".st")))
+ '(speedbar-supported-extension-expressions
+   (quote
+    ("\\.\\(inc\\|php[s34]?\\)" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".f\\(90\\|77\\|or\\)?" ".ada" ".p[lm]" ".tcl" ".m" ".scm" ".phtml" ".css" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".hs" ".st")))
  '(sr-speedbar-auto-refresh nil)
  '(sr-speedbar-skip-other-window-p nil)
  '(sr-speedbar-width-console 30)
@@ -63,7 +75,7 @@
 
 (package-initialize)
 
-; fetch the list of packages available 
+; fetch the list of packages available
 (unless package-archive-contents
   (package-refresh-contents))
 
@@ -101,17 +113,20 @@
                         temp-file
                         (file-name-directory buffer-file-name))))
       (list "pycheckers" (list local-file))))
-  
+
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pyflakes-init)))
 
 ;;(add-hook 'find-file-hook 'flymake-find-file-hook)
 
+;;delete trailing whitespaces before save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;;===== HtmlFlymakes
 (defun flymake-xml-init ()
   (list "xmlstarlet"
-        (list "val" "-e" "-q" 
-              (flymake-init-create-temp-buffer-copy 
+        (list "val" "-e" "-q"
+              (flymake-init-create-temp-buffer-copy
                'flymake-create-temp-inplace))))
 
 (custom-set-faces
@@ -126,6 +141,9 @@
 
 ;;(tabbar-mode)
 (ido-mode)
+
+;;initialize project in current directory
+;;(desktop-change-dir default-directory)
 
 ;;----------------------------------------------------------------------------
 ;; Fill column indicator
