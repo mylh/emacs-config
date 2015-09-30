@@ -61,7 +61,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(jinja2-mode js2-mode less-css-mode jedi yaml-mode fill-column-indicator))
+(setq package-list '(python-mode jinja2-mode js2-mode less-css-mode jedi yaml-mode fill-column-indicator))
 
 (when (>= emacs-major-version 24)
   (require 'package)
