@@ -61,7 +61,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(python-mode jinja2-mode js2-mode less-css-mode jedi yaml-mode fill-column-indicator))
+(setq package-list '(python-pylint jinja2-mode js2-mode less-css-mode jedi yaml-mode fill-column-indicator))
 
 (when (>= emacs-major-version 24)
   (require 'package)
@@ -86,6 +86,7 @@
 
 
 (require 'python-mode)
+(require 'tramp)
 (setq-default fill-column 79)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
@@ -98,7 +99,7 @@
 (add-hook 'python-mode-hook 'jedi:setup)
 
 (global-set-key [f5] 'speedbar)
-(global-set-key [f9] 'pylint)
+(global-set-key [f9] 'python-pylint)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
