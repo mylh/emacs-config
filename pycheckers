@@ -1,5 +1,5 @@
 #!/bin/bash
-python3 -m pyflakes $1
+python -m pyflakes $1
 pep8 --repeat "$1"
 epylint "$1" 2>/dev/null
 true
