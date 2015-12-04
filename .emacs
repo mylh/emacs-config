@@ -61,19 +61,15 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(python-pylint jinja2-mode js2-mode less-css-mode jedi yaml-mode fill-column-indicator))
+(setq package-list '(python-pylint jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator icicles)) ;jedi
 
-(when (>= emacs-major-version 24)
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  (add-to-list 'package-archives '("elpa" . "http://tromey.com/elpa/") t)
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-  )
-
-
-(package-initialize)
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize) ;; You might already have this line
 
 ; fetch the list of packages available
 (unless package-archive-contents
@@ -96,7 +92,7 @@
 (add-hook 'python-mode-hook 'flymake-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 (add-hook 'python-mode-hook 'fci-mode)
-(add-hook 'python-mode-hook 'jedi:setup)
+;(add-hook 'python-mode-hook 'jedi:setup)
 
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'python-pylint)
@@ -142,6 +138,7 @@
 
 ;;(tabbar-mode)
 (ido-mode)
+(icicle-mode)
 
 ;;initialize project in current directory
 ;;(desktop-change-dir default-directory)
