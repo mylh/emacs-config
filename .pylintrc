@@ -1,0 +1,5 @@
+[TYPECHECK]
+generated-members=request,REQUEST,acl_users,aq_parent,objects,_meta,id,[a-zA-Z]+_set,DoesNotExist,as_view
+
+[MESSAGES CONTROL]
+disable=C0111,W0232
