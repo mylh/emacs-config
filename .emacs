@@ -16,6 +16,7 @@
  '(haskell-font-lock-symbols t)
  '(indent-tabs-mode nil)
  '(save-place t nil (saveplace))
+ '(scroll-bar-mode nil)
  '(sgml-basic-offset 4)
  '(show-paren-mode t)
  '(size-indication-mode t)
@@ -39,11 +40,7 @@
  '(sr-speedbar-width-x 30)
  '(tab-width 4)
  '(tabbar-cycle-scope (quote tabs))
- '(tool-bar-mode nil)
- '(web-mode-code-indent-offset 4)
- '(web-mode-css-indent-offset 4)
- '(web-mode-enable-string-interpolation t)
- '(web-mode-markup-indent-offset 4))
+ '(tool-bar-mode nil))
 
 (savehist-mode 1)
 
@@ -61,7 +58,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(python-pylint jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator icicles)) ;jedi
+(setq package-list '(flycheck python-pylint jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator icicles))
 
 (require 'package)
 (add-to-list 'package-archives
@@ -69,8 +66,7 @@
 (when (< emacs-major-version 24)
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize) ;; You might already have this line
-
+(package-initialize)
 ; fetch the list of packages available
 (unless package-archive-contents
   (package-refresh-contents))
@@ -80,41 +76,24 @@
   (unless (package-installed-p package)
     (package-install package)))
 
-
 (require 'python-mode)
-(require 'tramp)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
 (setq-default fill-column 79)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-hook 'python-mode-hook 'hs-minor-mode)
-(add-hook 'python-mode-hook 'flymake-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 (add-hook 'python-mode-hook 'fci-mode)
-;(add-hook 'python-mode-hook 'jedi:setup)
 
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'python-pylint)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+(scroll-bar-mode -1)
 
-
-;;===== PyFlakes
-;;code checking via pyflakes+flymake
-(when (load "flymake" t)
-  (defun flymake-pyflakes-init ()
-    (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                       'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-      (list "pycheckers" (list local-file))))
-
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init)))
-
-;;(add-hook 'find-file-hook 'flymake-find-file-hook)
 
 ;;delete trailing whitespaces before save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -126,6 +105,7 @@
               (flymake-init-create-temp-buffer-copy
                'flymake-create-temp-inplace))))
 
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -136,12 +116,7 @@
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
 
-;;(tabbar-mode)
 (ido-mode)
-(icicle-mode)
-
-;;initialize project in current directory
-;;(desktop-change-dir default-directory)
 
 ;;----------------------------------------------------------------------------
 ;; Fill column indicator
@@ -178,3 +153,4 @@
       (with-current-buffer buffer
         (when (sanityinc/fci-enabled-p)
           (turn-on-fci-mode))))))
+;;; .emacs ends here
