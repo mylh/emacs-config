@@ -12,6 +12,7 @@
  '(desktop-save (quote ask-if-new))
  '(desktop-save-mode t)
  '(display-time-mode t)
+ '(fci-rule-color "#383838")
  '(haskell-font-lock-haddock t)
  '(haskell-font-lock-symbols t)
  '(indent-tabs-mode nil)
@@ -24,7 +25,7 @@
  '(speedbar-frame-parameters
    (quote
     ((minibuffer)
-     (width . 25)
+     (width . 27)
      (border-width . 0)
      (menu-bar-lines . 0)
      (tool-bar-lines . 0)
@@ -40,7 +41,29 @@
  '(sr-speedbar-width-x 30)
  '(tab-width 4)
  '(tabbar-cycle-scope (quote tabs))
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(vc-annotate-background "#2B2B2B")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#BC8383")
+     (40 . "#CC9393")
+     (60 . "#DFAF8F")
+     (80 . "#D0BF8F")
+     (100 . "#E0CF9F")
+     (120 . "#F0DFAF")
+     (140 . "#5F7F5F")
+     (160 . "#7F9F7F")
+     (180 . "#8FB28F")
+     (200 . "#9FC59F")
+     (220 . "#AFD8AF")
+     (240 . "#BFEBBF")
+     (260 . "#93E0E3")
+     (280 . "#6CA0A3")
+     (300 . "#7CB8BB")
+     (320 . "#8CD0D3")
+     (340 . "#94BFF3")
+     (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3"))
 
 (savehist-mode 1)
 
@@ -58,7 +81,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(flycheck python-pylint jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator icicles))
+(setq package-list '(flycheck python-pylint jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator icicles jedi))
 
 (require 'package)
 (add-to-list 'package-archives
@@ -87,12 +110,13 @@
 (add-hook 'python-mode-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 (add-hook 'python-mode-hook 'fci-mode)
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
 
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'python-pylint)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
-(scroll-bar-mode -1)
 
 
 ;;delete trailing whitespaces before save
