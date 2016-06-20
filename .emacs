@@ -16,6 +16,7 @@
  '(haskell-font-lock-haddock t)
  '(haskell-font-lock-symbols t)
  '(indent-tabs-mode nil)
+ '(menu-bar-mode nil)
  '(save-place t nil (saveplace))
  '(scroll-bar-mode nil)
  '(sgml-basic-offset 4)
@@ -81,7 +82,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(flycheck python-pylint jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator icicles jedi))
+(setq package-list '(flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator icicles jedi))
 
 (require 'package)
 (add-to-list 'package-archives
@@ -100,27 +101,32 @@
     (package-install package)))
 
 (require 'python-mode)
+(setq flycheck-python-pylint-executable "pylint3")
+
+;;hooks
 (add-hook 'after-init-hook #'global-flycheck-mode)
+;;delete trailing whitespaces before save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'python-mode-hook 'hs-minor-mode)
+(add-hook 'python-mode-hook 'turn-on-auto-fill)
+(add-hook 'python-mode-hook 'fci-mode)
+(add-hook 'python-mode-hook 'jedi:setup)
+
 
 (setq-default fill-column 79)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-hook 'python-mode-hook 'hs-minor-mode)
-(add-hook 'python-mode-hook 'turn-on-auto-fill)
-(add-hook 'python-mode-hook 'fci-mode)
-(add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
 
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'python-pylint)
+(global-set-key [f8] 'kill-this-buffer)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
 
-;;delete trailing whitespaces before save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;;===== HtmlFlymakes
 (defun flymake-xml-init ()
@@ -135,7 +141,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "unknown" :slant normal :weight normal :height 113 :width normal)))))
+ '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight normal :height 143 :width normal)))))
 
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
