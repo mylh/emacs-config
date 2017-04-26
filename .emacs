@@ -16,7 +16,6 @@
  '(haskell-font-lock-haddock t)
  '(haskell-font-lock-symbols t)
  '(indent-tabs-mode nil)
- '(menu-bar-mode nil)
  '(save-place t nil (saveplace))
  '(scroll-bar-mode nil)
  '(sgml-basic-offset 4)
@@ -123,6 +122,7 @@
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'python-pylint)
 (global-set-key [f8] 'kill-this-buffer)
+
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
@@ -141,7 +141,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight normal :height 143 :width normal)))))
+ '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight normal :height 120 :width normal)))))
 
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
@@ -183,4 +183,11 @@
       (with-current-buffer buffer
         (when (sanityinc/fci-enabled-p)
           (turn-on-fci-mode))))))
+
+;; Full file path in frame title
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
+
 ;;; .emacs ends here
