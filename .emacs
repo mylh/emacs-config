@@ -122,6 +122,7 @@
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'python-pylint)
 (global-set-key [f8] 'kill-this-buffer)
+(global-set-key [f12] 'toggle-truncate-lines)
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
