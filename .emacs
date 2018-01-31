@@ -16,6 +16,8 @@
  '(haskell-font-lock-haddock t)
  '(haskell-font-lock-symbols t)
  '(indent-tabs-mode nil)
+ '(jedi:tooltip-method nil)
+ '(pylint-command "pylint3")
  '(save-place t nil (saveplace))
  '(scroll-bar-mode nil)
  '(sgml-basic-offset 4)
@@ -120,7 +122,7 @@
 (setq jedi:complete-on-dot t)
 
 (global-set-key [f5] 'speedbar)
-(global-set-key [f9] 'python-pylint)
+(global-set-key [f9] 'pylint)
 (global-set-key [f8] 'kill-this-buffer)
 (global-set-key [f12] 'toggle-truncate-lines)
 
@@ -142,7 +144,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight normal :height 120 :width normal)))))
+ '(default ((t (:family "Roboto Mono" :foundry "pyrs" :slant normal :weight normal :height 121 :width normal)))))
 
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
