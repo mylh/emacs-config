@@ -13,12 +13,9 @@
  '(desktop-save-mode t)
  '(display-time-mode t)
  '(fci-rule-color "#383838")
- '(haskell-font-lock-haddock t)
- '(haskell-font-lock-symbols t)
  '(indent-tabs-mode nil)
- '(jedi:tooltip-method nil)
  '(pylint-command "pylint3")
- '(save-place t nil (saveplace))
+ '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
  '(sgml-basic-offset 4)
  '(show-paren-mode t)
@@ -67,6 +64,9 @@
      (360 . "#DC8CC3"))))
  '(vc-annotate-very-old-color "#DC8CC3"))
 
+(add-to-list 'default-frame-alist
+             '(font . "Ubuntu Mono-12"))
+
 (savehist-mode 1)
 
 (set-language-info-alist
@@ -104,6 +104,15 @@
 (require 'python-mode)
 (setq flycheck-python-pylint-executable "pylint3")
 
+; move quick-help tooltips to the minibuffer
+(setq jedi:tooltip-method nil)
+(setq jedi:complete-on-dot t)
+
+; disable all auto-completion unless explicitly invoked with M-tab
+(setq ac-auto-show-menu nil)
+(setq ac-auto-start nil)
+(define-key ac-mode-map (kbd "s-SPC") 'auto-complete)
+
 ;;hooks
 (add-hook 'after-init-hook #'global-flycheck-mode)
 ;;delete trailing whitespaces before save
@@ -119,7 +128,6 @@
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(setq jedi:complete-on-dot t)
 
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'pylint)
@@ -144,7 +152,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Roboto Mono" :foundry "pyrs" :slant normal :weight normal :height 121 :width normal)))))
+ '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight normal :height 120 :width normal)))))
 
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
