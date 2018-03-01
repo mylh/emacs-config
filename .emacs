@@ -64,9 +64,6 @@
      (360 . "#DC8CC3"))))
  '(vc-annotate-very-old-color "#DC8CC3"))
 
-(add-to-list 'default-frame-alist
-             '(font . "Ubuntu Mono-12"))
-
 (savehist-mode 1)
 
 (set-language-info-alist
@@ -109,6 +106,7 @@
 (setq jedi:complete-on-dot t)
 
 ; disable all auto-completion unless explicitly invoked with M-tab
+(require 'auto-complete-config)
 (setq ac-auto-show-menu nil)
 (setq ac-auto-start nil)
 (define-key ac-mode-map (kbd "s-SPC") 'auto-complete)
