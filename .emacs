@@ -14,7 +14,10 @@
  '(display-time-mode t)
  '(fci-rule-color "#383838")
  '(indent-tabs-mode nil)
- '(pylint-command "pylint3")
+ '(package-selected-packages
+   (quote
+    (flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator)))
+ ;; '(pylint-command "pylint3")
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
  '(sgml-basic-offset 4)
@@ -80,7 +83,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator icicles jedi))
+(setq package-list '(pylint flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator jedi))
 
 (require 'package)
 (add-to-list 'package-archives
@@ -99,8 +102,6 @@
     (package-install package)))
 
 (require 'python-mode)
-(setq flycheck-python-pylint-executable "pylint3")
-
 ; move quick-help tooltips to the minibuffer
 (setq jedi:tooltip-method nil)
 (setq jedi:complete-on-dot t)
@@ -113,12 +114,18 @@
 
 ;;hooks
 (add-hook 'after-init-hook #'global-flycheck-mode)
+(autoload 'pylint "pylint")
+(add-hook 'python-mode-hook 'pylint-add-menu-items)
+(add-hook 'python-mode-hook 'pylint-add-key-bindings)
 ;;delete trailing whitespaces before save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'python-mode-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 (add-hook 'python-mode-hook 'fci-mode)
 (add-hook 'python-mode-hook 'jedi:setup)
+;; (add-hook 'python-mode-hook
+;;           (lambda ()
+;;             (setq flycheck-python-pylint-executable "/usr/bin/python3")))
 
 
 (setq-default fill-column 79)
@@ -136,7 +143,6 @@
 (put 'upcase-region 'disabled nil)
 
 
-
 ;;===== HtmlFlymakes
 (defun flymake-xml-init ()
   (list "xmlstarlet"
@@ -144,18 +150,19 @@
               (flymake-init-create-temp-buffer-copy
                'flymake-create-temp-inplace))))
 
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight normal :height 120 :width normal)))))
+ '(default ((t (:family "Hack" :slant normal :weight normal :height 102 :width normal :foundry "simp")))))
 
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
 
-(ido-mode)
+(require 'ido)
+(ido-mode t)
+
 
 ;;----------------------------------------------------------------------------
 ;; Fill column indicator
