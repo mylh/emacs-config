@@ -16,8 +16,8 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator)))
- ;; '(pylint-command "pylint3")
+    (rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
+ '(safe-local-variable-values (quote ((sgml-basic-offset . 2))))
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
  '(sgml-basic-offset 4)
@@ -130,6 +130,7 @@
 
 (setq-default fill-column 79)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . rjsx-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
