@@ -16,7 +16,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
+    (docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
  '(safe-local-variable-values (quote ((sgml-basic-offset . 2))))
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
@@ -83,15 +83,15 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 ; list the packages you want
-(setq package-list '(pylint flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator jedi))
+(setq package-list '(docker-compose-mode dockerfile-mode go-mode python-mode pylint flycheck jinja2-mode js2-mode less-css-mode
+                     yaml-mode fill-column-indicator jedi))
 
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+             '("melpa" . "http://melpa.milkbox.net/packages/"))
+
 (package-initialize)
+
 ; fetch the list of packages available
 (unless package-archive-contents
   (package-refresh-contents))
@@ -117,16 +117,12 @@
 (autoload 'pylint "pylint")
 (add-hook 'python-mode-hook 'pylint-add-menu-items)
 (add-hook 'python-mode-hook 'pylint-add-key-bindings)
-;;delete trailing whitespaces before save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'python-mode-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 (add-hook 'python-mode-hook 'fci-mode)
 (add-hook 'python-mode-hook 'jedi:setup)
-;; (add-hook 'python-mode-hook
-;;           (lambda ()
-;;             (setq flycheck-python-pylint-executable "/usr/bin/python3")))
-
+(add-hook 'before-save-hook 'delete-trailing-whitespace) ;;delete trailing whitespaces before save
+(add-hook 'before-save-hook 'gofmt-before-save)
 
 (setq-default fill-column 79)
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
@@ -134,6 +130,7 @@
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
 
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'pylint)
@@ -206,5 +203,4 @@
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
-
 ;;; .emacs ends here
