@@ -1,3 +1,9 @@
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Hack" :foundry "SRC" :slant normal :weight normal :height 90 :width normal)))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -16,7 +22,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
+    (elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
  '(safe-local-variable-values (quote ((sgml-basic-offset . 2))))
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
@@ -82,35 +88,39 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
-; list the packages you want
-(setq package-list '(docker-compose-mode dockerfile-mode go-mode python-mode pylint flycheck jinja2-mode js2-mode less-css-mode
-                     yaml-mode fill-column-indicator jedi))
-
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/"))
 
 (package-initialize)
 
-; fetch the list of packages available
+;; list the packages you want
+(setq package-list '(use-package docker-compose-mode dockerfile-mode go-mode python-mode pylint flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator jedi))
+
+;; fetch the list of packages available
 (unless package-archive-contents
   (package-refresh-contents))
 
-; install the missing packages
+;; install the missing packages
 (dolist (package package-list)
   (unless (package-installed-p package)
     (package-install package)))
 
-(require 'python-mode)
-; move quick-help tooltips to the minibuffer
-(setq jedi:tooltip-method nil)
-(setq jedi:complete-on-dot t)
+;; move quick-help tooltips to the minibuffer
+;; (setq jedi:tooltip-method nil)
+;; (setq jedi:complete-on-dot t)
 
-; disable all auto-completion unless explicitly invoked with M-tab
-(require 'auto-complete-config)
-(setq ac-auto-show-menu nil)
-(setq ac-auto-start nil)
-(define-key ac-mode-map (kbd "s-SPC") 'auto-complete)
+;; disable all auto-completion unless explicitly invoked with M-tab
+;; (require 'auto-complete-config)
+;; (setq ac-auto-show-menu nil)
+;; (setq ac-auto-start nil)
+;; (define-key ac-mode-map (kbd "s-SPC") 'auto-complete)
+
+(require 'use-package)
+(use-package elpy
+  :ensure t
+  :init
+  (elpy-enable))
 
 ;;hooks
 (add-hook 'after-init-hook #'global-flycheck-mode)
@@ -120,8 +130,8 @@
 (add-hook 'python-mode-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 (add-hook 'python-mode-hook 'fci-mode)
-(add-hook 'python-mode-hook 'jedi:setup)
-(add-hook 'before-save-hook 'delete-trailing-whitespace) ;;delete trailing whitespaces before save
+;;(add-hook 'python-mode-hook 'jedi:setup)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'before-save-hook 'gofmt-before-save)
 
 (setq-default fill-column 79)
@@ -140,20 +150,6 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
-
-;;===== HtmlFlymakes
-(defun flymake-xml-init ()
-  (list "xmlstarlet"
-        (list "val" "-e" "-q"
-              (flymake-init-create-temp-buffer-copy
-               'flymake-create-temp-inplace))))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Hack" :slant normal :weight normal :height 102 :width normal :foundry "simp")))))
 
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
