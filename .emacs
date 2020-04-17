@@ -13,7 +13,6 @@
    ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
  '(c-basic-offset 4)
  '(column-number-mode t)
- '(custom-enabled-themes (quote (wombat)))
  '(desktop-restore-frames t)
  '(desktop-save (quote ask-if-new))
  '(desktop-save-mode t)
@@ -22,7 +21,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
-    (elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
+    (all-the-icons solaire-mode doom-themes treemacs markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
  '(safe-local-variable-values (quote ((sgml-basic-offset . 2))))
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
@@ -43,37 +42,11 @@
  '(speedbar-supported-extension-expressions
    (quote
     ("\\.\\(inc\\|php[s34]?\\)" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".f\\(90\\|77\\|or\\)?" ".ada" ".p[lm]" ".tcl" ".m" ".scm" ".phtml" ".css" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".hs" ".st")))
- '(sr-speedbar-auto-refresh nil)
- '(sr-speedbar-skip-other-window-p nil)
- '(sr-speedbar-width-console 30)
- '(sr-speedbar-width-x 30)
  '(tab-width 4)
  '(tabbar-cycle-scope (quote tabs))
  '(tool-bar-mode nil)
- '(vc-annotate-background "#2B2B2B")
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#BC8383")
-     (40 . "#CC9393")
-     (60 . "#DFAF8F")
-     (80 . "#D0BF8F")
-     (100 . "#E0CF9F")
-     (120 . "#F0DFAF")
-     (140 . "#5F7F5F")
-     (160 . "#7F9F7F")
-     (180 . "#8FB28F")
-     (200 . "#9FC59F")
-     (220 . "#AFD8AF")
-     (240 . "#BFEBBF")
-     (260 . "#93E0E3")
-     (280 . "#6CA0A3")
-     (300 . "#7CB8BB")
-     (320 . "#8CD0D3")
-     (340 . "#94BFF3")
-     (360 . "#DC8CC3"))))
- '(vc-annotate-very-old-color "#DC8CC3"))
-
-(savehist-mode 1)
+ '(treemacs-filewatch-mode t)
+ '(treemacs-fringe-indicator-mode t))
 
 (set-language-info-alist
  "Cyrillic-CP1251" `((charset cyrillic-iso8859-5)
@@ -95,7 +68,7 @@
 (package-initialize)
 
 ;; list the packages you want
-(setq package-list '(use-package docker-compose-mode dockerfile-mode go-mode python-mode pylint flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator jedi))
+(setq package-list '(use-package solaire-mode all-the-icons doom-themes treemacs docker-compose-mode dockerfile-mode go-mode python-mode pylint flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator jedi))
 
 ;; fetch the list of packages available
 (unless package-archive-contents
@@ -154,9 +127,30 @@
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
 
+(savehist-mode 1)
 (require 'ido)
 (ido-mode t)
+(treemacs)
 
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-one") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+
+(require 'solaire-mode)
+(solaire-global-mode +1)
 
 ;;----------------------------------------------------------------------------
 ;; Fill column indicator
