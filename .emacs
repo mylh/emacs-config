@@ -13,11 +13,16 @@
    ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
  '(c-basic-offset 4)
  '(column-number-mode t)
+ '(custom-safe-themes
+   (quote
+    ("99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default)))
  '(desktop-restore-frames t)
  '(desktop-save (quote ask-if-new))
  '(desktop-save-mode t)
  '(display-time-mode t)
- '(fci-rule-color "#383838")
+ '(fci-dash-pattern 0.1)
+ '(fci-rule-color "#738cff")
+ '(fci-rule-use-dashes t)
  '(indent-tabs-mode nil)
  '(package-selected-packages
    (quote
@@ -137,13 +142,13 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
+  (load-theme 'doom-one-light t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
 
   ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-one") ; use the colorful treemacs theme
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   (doom-themes-treemacs-config)
 
   ;; Corrects (and improves) org-mode's native fontification.
