@@ -13,20 +13,27 @@
    ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
  '(c-basic-offset 4)
  '(column-number-mode t)
+ '(custom-enabled-themes (quote (wombat)))
  '(custom-safe-themes
    (quote
-    ("99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default)))
+    ("1ed5c8b7478d505a358f578c00b58b430dde379b856fbcb60ed8d345fc95594e" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "bc836bf29eab22d7e5b4c142d201bcce351806b7c1f94955ccafab8ce5b20208" "2cdc13ef8c76a22daa0f46370011f54e79bae00d5736340a5ddfe656a767fddf" "e1ecb0536abec692b5a5e845067d75273fe36f24d01210bf0aa5842f2a7e029f" "58c3313b4811ed8b30239b1d04816f74d438bcb72626d68181f294b115b7220d" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default)))
  '(desktop-restore-frames t)
  '(desktop-save (quote ask-if-new))
  '(desktop-save-mode t)
  '(display-time-mode t)
- '(fci-dash-pattern 0.1)
  '(fci-rule-color "#738cff")
- '(fci-rule-use-dashes t)
+ '(fci-rule-use-dashes nil)
  '(indent-tabs-mode nil)
+ '(jdee-db-active-breakpoint-face-colors (cons "#171F24" "#c792ea"))
+ '(jdee-db-requested-breakpoint-face-colors (cons "#171F24" "#c3e88d"))
+ '(jdee-db-spec-breakpoint-face-colors (cons "#171F24" "#37474F"))
+ '(objed-cursor-color "#ff5370")
  '(package-selected-packages
    (quote
-    (all-the-icons solaire-mode doom-themes treemacs markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
+    (all-the-icons solaire-mode doom-themes markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
+ '(pdf-view-midnight-colors (cons "#EEFFFF" "#263238"))
+ '(rustic-ansi-faces
+   ["#263238" "#ff5370" "#c3e88d" "#ffcb6b" "#82aaff" "#c792ea" "#89DDFF" "#EEFFFF"])
  '(safe-local-variable-values (quote ((sgml-basic-offset . 2))))
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
@@ -50,8 +57,28 @@
  '(tab-width 4)
  '(tabbar-cycle-scope (quote tabs))
  '(tool-bar-mode nil)
- '(treemacs-filewatch-mode t)
- '(treemacs-fringe-indicator-mode t))
+ '(vc-annotate-background "#263238")
+ '(vc-annotate-color-map
+   (list
+    (cons 20 "#c3e88d")
+    (cons 40 "#d7de81")
+    (cons 60 "#ebd476")
+    (cons 80 "#ffcb6b")
+    (cons 100 "#fcb66b")
+    (cons 120 "#f9a16b")
+    (cons 140 "#f78c6c")
+    (cons 160 "#e78e96")
+    (cons 180 "#d690c0")
+    (cons 200 "#c792ea")
+    (cons 220 "#d97dc1")
+    (cons 240 "#ec6898")
+    (cons 260 "#ff5370")
+    (cons 280 "#cd5067")
+    (cons 300 "#9b4d5f")
+    (cons 320 "#694a57")
+    (cons 340 "#37474F")
+    (cons 360 "#37474F")))
+ '(vc-annotate-very-old-color nil))
 
 (set-language-info-alist
  "Cyrillic-CP1251" `((charset cyrillic-iso8859-5)
@@ -73,7 +100,7 @@
 (package-initialize)
 
 ;; list the packages you want
-(setq package-list '(use-package solaire-mode all-the-icons doom-themes treemacs docker-compose-mode dockerfile-mode go-mode python-mode pylint flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator jedi))
+(setq package-list '(use-package solaire-mode all-the-icons doom-themes docker-compose-mode dockerfile-mode go-mode python-mode pylint flycheck jinja2-mode js2-mode less-css-mode yaml-mode fill-column-indicator jedi))
 
 ;; fetch the list of packages available
 (unless package-archive-contents
@@ -107,7 +134,7 @@
 (add-hook 'python-mode-hook 'pylint-add-key-bindings)
 (add-hook 'python-mode-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
-(add-hook 'python-mode-hook 'fci-mode)
+;;(add-hook 'python-mode-hook 'fci-mode)
 ;;(add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'before-save-hook 'gofmt-before-save)
@@ -135,24 +162,8 @@
 (savehist-mode 1)
 (require 'ido)
 (ido-mode t)
-(treemacs)
 
-(use-package doom-themes
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one-light t)
 
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (doom-themes-treemacs-config)
-
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
 
 (require 'solaire-mode)
 (solaire-global-mode +1)
