@@ -21,8 +21,7 @@
  '(desktop-save (quote ask-if-new))
  '(desktop-save-mode t)
  '(display-time-mode t)
- '(fci-rule-color "#738cff")
- '(fci-rule-use-dashes nil)
+ '(fci-rule-color "gray28")
  '(indent-tabs-mode nil)
  '(jdee-db-active-breakpoint-face-colors (cons "#171F24" "#c792ea"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#171F24" "#c3e88d"))
@@ -134,8 +133,7 @@
 (add-hook 'python-mode-hook 'pylint-add-key-bindings)
 (add-hook 'python-mode-hook 'hs-minor-mode)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
-;;(add-hook 'python-mode-hook 'fci-mode)
-;;(add-hook 'python-mode-hook 'jedi:setup)
+(add-hook 'python-mode-hook 'fci-mode)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'before-save-hook 'gofmt-before-save)
 
@@ -209,4 +207,7 @@
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
+
+(put 'pylint-command 'safe-local-variable (lambda (_) t))
+
 ;;; .emacs ends here
