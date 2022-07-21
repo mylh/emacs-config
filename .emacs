@@ -1,51 +1,44 @@
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Hack" :foundry "SRC" :slant normal :weight normal :height 90 :width normal)))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
  '(c-basic-offset 4)
  '(column-number-mode t)
- '(sentence-end-double-space nil)
- '(custom-enabled-themes (quote (wombat)))
  '(desktop-restore-frames t)
- '(desktop-save (quote ask-if-new))
- '(desktop-save-mode t)
+ '(desktop-save 'if-exists)
  '(display-time-mode t)
+ '(ein:output-area-inlined-images t)
+ '(elpy-modules
+   '(elpy-module-company elpy-module-eldoc elpy-module-folding elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))
  '(fci-rule-color "gray28")
+ '(flycheck-checkers
+   '(ada-gnat asciidoctor asciidoc bazel-buildifier c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint css-stylelint cuda-nvcc cwl d-dmd dockerfile-hadolint emacs-lisp emacs-lisp-checkdoc erlang-rebar3 erlang eruby-erubis eruby-ruumba fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck go-unconvert go-staticcheck groovy haml handlebars haskell-stack-ghc haskell-ghc haskell-hlint html-tidy javascript-eslint javascript-jshint javascript-standard json-jsonlint json-python-json json-jq jsonnet less less-stylelint llvm-llc lua-luacheck lua markdown-markdownlint-cli markdown-mdl nix nix-linter opam perl perl-perlcritic php php-phpmd php-phpcs processing proselint protobuf-protoc protobuf-prototool pug puppet-parser puppet-lint python-pylint python-flake8 python-pycompile python-mypy r-lintr racket rpm-rpmlint rst-sphinx rst ruby-rubocop ruby-reek ruby-rubylint ruby ruby-jruby rust-cargo rust rust-clippy scala scala-scalastyle scheme-chicken scss-lint scss-stylelint sass/scss-sass-lint sass scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim slim-lint sql-sqlint systemd-analyze tcl-nagelfar terraform terraform-tflint tex-chktex tex-lacheck texinfo textlint typescript-tslint verilog-verilator vhdl-ghdl xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby yaml-yamllint))
+ '(flycheck-python-pylint-executable "pylint")
  '(indent-tabs-mode nil)
  '(package-selected-packages
-   (quote
-    (all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator)))
- '(safe-local-variable-values (quote ((sgml-basic-offset . 2))))
+   '(ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator))
+ '(safe-local-variable-values (sgml-basic-offset . 2)))
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
+ '(sentence-end-double-space nil)
  '(sgml-basic-offset 4)
  '(show-paren-mode t)
  '(size-indication-mode t)
- '(speedbar-default-position (quote right))
+ '(speedbar-default-position 'right)
  '(speedbar-frame-parameters
-   (quote
-    ((minibuffer)
+   '((minibuffer)
      (width . 27)
      (border-width . 0)
      (menu-bar-lines . 0)
      (tool-bar-lines . 0)
      (unsplittable . t)
-     (left-fringe . 0))))
+     (left-fringe . 0)))
  '(speedbar-show-unknown-files t)
  '(speedbar-supported-extension-expressions
-   (quote
-    ("\\.\\(inc\\|php[s34]?\\)" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".f\\(90\\|77\\|or\\)?" ".ada" ".p[lm]" ".tcl" ".m" ".scm" ".phtml" ".css" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".hs" ".st")))
+   '("\\.\\(inc\\|php[s34]?\\)" ".[ch]\\(\\+\\+\\|pp\\|c\\|h\\|xx\\)?" ".tex\\(i\\(nfo\\)?\\)?" ".el" ".emacs" ".l" ".lsp" ".p" ".java" ".f\\(90\\|77\\|or\\)?" ".ada" ".p[lm]" ".tcl" ".m" ".scm" ".phtml" ".css" ".pm" ".py" ".g" ".s?html" ".ma?k" "[Mm]akefile\\(\\.in\\)?" ".hs" ".st"))
  '(tab-width 4)
- '(tabbar-cycle-scope (quote tabs)))
+ '(tabbar-cycle-scope 'tabs)
 
 
 (set-language-info-alist
@@ -79,25 +72,19 @@
   (unless (package-installed-p package)
     (package-install package)))
 
-;; move quick-help tooltips to the minibuffer
-;; (setq jedi:tooltip-method nil)
-;; (setq jedi:complete-on-dot t)
-
-;; disable all auto-completion unless explicitly invoked with M-tab
-;; (require 'auto-complete-config)
-;; (setq ac-auto-show-menu nil)
-;; (setq ac-auto-start nil)
-;; (define-key ac-mode-map (kbd "s-SPC") 'auto-complete)
-
 (require 'use-package)
 (use-package elpy
   :ensure t
   :init
   (elpy-enable))
 
-;;hooks
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
 (add-hook 'after-init-hook #'global-flycheck-mode)
-(autoload 'pylint "pylint")
+
+
+;;hooks
 (add-hook 'python-mode-hook 'pylint-add-menu-items)
 (add-hook 'python-mode-hook 'pylint-add-key-bindings)
 (add-hook 'python-mode-hook 'hs-minor-mode)
@@ -121,7 +108,6 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
-
 
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
@@ -175,3 +161,9 @@
 
 (put 'pylint-command 'safe-local-variable (lambda (_) t))
 ;;; .emacs ends here
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Hack" :foundry "SRC" :slant normal :weight normal :height 90 :width normal)))))
