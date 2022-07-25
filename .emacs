@@ -6,7 +6,8 @@
  '(c-basic-offset 4)
  '(column-number-mode t)
  '(desktop-restore-frames t)
- '(desktop-save 'if-exists)
+ '(desktop-save 'ask-if-new)
+ '(desktop-save-mode t)
  '(display-time-mode t)
  '(ein:output-area-inlined-images t)
  '(elpy-modules
@@ -18,7 +19,7 @@
  '(indent-tabs-mode nil)
  '(package-selected-packages
    '(ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator))
- '(safe-local-variable-values (sgml-basic-offset . 2)))
+ '(safe-local-variable-values '((sgml-basic-offset . 2))))
  '(save-place-mode t nil (saveplace))
  '(scroll-bar-mode nil)
  '(sentence-end-double-space nil)
@@ -103,7 +104,7 @@
 
 (global-set-key [f5] 'speedbar)
 (global-set-key [f9] 'pylint)
-(global-set-key [f8] 'kill-this-buffer)
+(global-set-key [f8] 'kill-current-buffer)
 (global-set-key [f12] 'toggle-truncate-lines)
 
 (put 'downcase-region 'disabled nil)
