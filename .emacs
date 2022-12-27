@@ -19,13 +19,12 @@
  '(elpy-modules
    '(elpy-module-company elpy-module-eldoc elpy-module-folding elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))
  '(elpy-rpc-python-command "python3")
- '(fci-rule-color "gainsboro")
  '(flycheck-python-pylint-executable "pylint")
  '(hl-sexp-background-color "#efebe9")
  '(indent-tabs-mode nil)
- '(ispell-dictionary nil)
+ '(ispell-dictionary "english")
  '(package-selected-packages
-   '(json-mode material-theme jedi-direx ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator))
+   '(web-mode tide json-mode material-theme jedi-direx ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator))
  '(safe-local-variable-values '((sgml-basic-offset . 2)))
  '(speedbar-frame-parameters
    '((minibuffer)
@@ -105,6 +104,7 @@
      material-theme
      all-the-icons
      elpy
+     tide
      flycheck
      docker-compose-mode
      dockerfile-mode
@@ -140,23 +140,25 @@
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 
+(require 'ido)
+(ido-mode t)
+(show-paren-mode 1)
+(savehist-mode 1)
 
 ;;hooks
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'python-mode-hook 'pylint-add-menu-items)
 (add-hook 'python-mode-hook 'pylint-add-key-bindings)
 ;;(add-hook 'python-mode-hook 'turn-on-auto-fill)
 ;;(add-hook 'python-mode-hook 'hs-minor-mode)
-;;(add-hook 'python-mode-hook 'fci-mode)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'before-save-hook 'gofmt-before-save)
+(add-hook 'go-mode-hook (lambda ()
+                            (add-hook 'before-save-hook 'gofmt-before-save)))
 (add-hook 'elpy-mode-hook (lambda ()
                             (add-hook 'before-save-hook
                                       'elpy-format-code nil t)))
 
 
 (setq-default fill-column 79)
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . rjsx-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
@@ -173,12 +175,6 @@
 ;;(when window-system (set-frame-position (selected-frame) 0 0))
 (when window-system (set-frame-size (selected-frame) 207 61))
 
-(savehist-mode 1)
-(require 'ido)
-(ido-mode t)
-(show-paren-mode 1)
-
-
 ;; Full file path in frame title
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
@@ -189,10 +185,58 @@
 (put 'flycheck-python-pylint-executable 'safe-local-variable (lambda (_) t))
 (put 'flycheck-javascript-eslint-executable 'safe-local-variable (lambda (_) t))
 (put 'python-shell-interpreter 'safe-local-variable (lambda (_) t))
-;;; .emacs ends here
+
+;; Tide setup
+(require 'web-mode)
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "tsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+;; enable typescript-tslint checker
+(flycheck-add-mode 'typescript-tslint 'web-mode)
+
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "jsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+;; configure jsx-tide checker to run after your default jsx checker
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Hack" :foundry "SRC" :slant normal :weight normal :height 90 :width normal)))))
+
+;;; .emacs ends here
