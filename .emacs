@@ -24,7 +24,7 @@
  '(indent-tabs-mode nil)
  '(ispell-dictionary "english")
  '(package-selected-packages
-   '(web-mode tide json-mode material-theme jedi-direx ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode rjsx-mode jinja2-mode flycheck fill-column-indicator))
+   '(web-mode tide json-mode material-theme jedi-direx ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
  '(safe-local-variable-values '((sgml-basic-offset . 2)))
  '(speedbar-frame-parameters
    '((minibuffer)
@@ -187,6 +187,7 @@
 (put 'python-shell-interpreter 'safe-local-variable (lambda (_) t))
 
 ;; Tide setup
+;; https://github.com/ananthakumaran/tide
 (require 'web-mode)
 (defun setup-tide-mode ()
   (interactive)
@@ -223,7 +224,7 @@
               (setup-tide-mode))))
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
-(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+;;(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
 
 (use-package tide
   :ensure t
