@@ -44,7 +44,8 @@
    '(elpy-module-company elpy-module-eldoc elpy-module-folding elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))
  '(elpy-rpc-python-command "python3")
  '(elpy-rpc-timeout 5)
- '(ema-model-name "gpt-3.5-turbo-1106")
+ '(ema-model-name "gpt-4o")
+ '(ema-timeout 120)
  '(fci-rule-color "#073642")
  '(flycheck-python-pylint-executable "pylint")
  '(highlight-changes-colors '("#d33682" "#6c71c4"))
@@ -72,7 +73,7 @@
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(package-selected-packages
-   '(web-mode tide json-mode material-theme jedi-direx ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode rjsx-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
+   '(web-mode tide json-mode jedi-direx ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(request-log-level 'warn)
@@ -184,7 +185,6 @@
      all-the-icons
      company
      elpy
-     tide
      flycheck
      docker-compose-mode
      dockerfile-mode
@@ -192,6 +192,8 @@
      pylint
      jinja2-mode
      js2-mode
+     typescript-mode
+     json-mode
      less-css-mode
      yaml-mode
      request))
@@ -234,17 +236,9 @@
 (show-paren-mode 1)
 (savehist-mode 1)
 
-(use-package tide
-  :ensure t
-  :after (typescript-mode company flycheck)
-  :hook ((typescript-mode . tide-setup)
-         (typescript-mode . tide-hl-identifier-mode)
-         ;;(before-save . tide-format-before-save)
-         ))
 
 ;; Tide setup
 ;; https://github.com/ananthakumaran/tide
-(require 'web-mode)
 (defun setup-tide-mode ()
   (interactive)
   (tide-setup)
@@ -252,10 +246,23 @@
   (setq flycheck-check-syntax-automatically '(save mode-enabled))
   (eldoc-mode +1)
   (tide-hl-identifier-mode +1)
+  (prettier-mode +1)
   ;; company is an optional dependency. You have to
   ;; install it separately via package-install
   ;; `M-x package-install [ret] company`
   (company-mode +1))
+
+;; if you use typescript-mode
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; if you use treesitter based typescript-ts-mode (emacs 29+)
+(add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+;;(add-hook 'before-save-hook 'tide-format-before-save)
+
 
 ; complete by copilot first, then company-mode
 (defun my-tab ()
@@ -277,16 +284,27 @@
 ;; ChatGPT emacs assistant
 (load "~/Projects/ema/ema.el")
 
+(defun my-go-mode-hook ()
+  ;; Set up godef jump key bindings
+  (local-set-key (kbd "M-.") 'godef-jump)
+
+  ;; Enable company mode
+  (company-mode 1)
+)
+
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
 ;;hooks
-;; (add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'python-mode-hook 'pylint-add-menu-items)
 (add-hook 'python-mode-hook 'pylint-add-key-bindings)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
-;;(add-hook 'python-mode-hook 'hs-minor-mode)
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
-(add-hook 'js2-mode-hook #'setup-tide-mode)
+(add-hook 'python-mode-hook 'hs-minor-mode)
+(add-hook 'tsx-ts-mode-hook #'setup-tide-mode)
+;;(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;;(add-hook 'js2-mode-hook #'setup-tide-mode)
 (add-hook 'go-mode-hook
           (lambda ()
             (add-hook 'before-save-hook 'gofmt-before-save)))
@@ -294,16 +312,6 @@
           (lambda ()
             (add-hook 'before-save-hook
                       'elpy-format-code nil t)))
-(add-hook 'web-mode-hook
-          (lambda ()
-            (let ((extension (file-name-extension buffer-file-name)))
-              (when (or (string-equal "jsx" extension)
-                        (string-equal "tsx" extension))
-                (setup-tide-mode)))))
-
-;; (add-hook 'web-mode-hook
-;;           (lambda ()
-;;             (add-hook 'before-save-hook 'tide-format-before-save)))
 
 
 
@@ -332,9 +340,9 @@
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
 
 
 (global-set-key [f5] 'speedbar)
@@ -351,62 +359,6 @@
 (put 'flycheck-javascript-eslint-executable 'safe-local-variable (lambda (_) t))
 (put 'python-shell-interpreter 'safe-local-variable (lambda (_) t))
 (put 'before-save-hook 'safe-local-variable (lambda (_) t))
-
-
-(flycheck-add-mode 'typescript-tslint 'web-mode)
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-;;(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
-;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
-
-;; (require 'solar)
-
-;; (setq calendar-latitude 41.7151)
-;; (setq calendar-longitude 44.8271)
-
-;; (defun load-theme-based-on-time ()
-;;   "Load a theme based on the time of day in Tbilisi, Georgia."
-;;   (interactive)
-;;   (let* ((now (current-time))
-;;          (today (calendar-current-date))
-;;          (solar-info (solar-sunrise-sunset today))
-;;          (sunrise-time (car solar-info))
-;;          (sunset-time (cadr solar-info))
-;;          (sunrise (solar-time-to-time sunrise-time))
-;;          (sunset (solar-time-to-time sunset-time)))
-;;     (message "Sunrise: %s, Sunset: %s" sunrise sunset)
-;;     (message "Now: %s" now)
-
-;;     (cond
-;;      ((and (time-less-p sunrise now) (time-less-p now sunset))
-;;       (load-theme 'dichromacy))
-;;      (t
-;;       (load-theme 'wombat)))))
-
-;; (defun solar-time-to-time (solar-time)
-;;   "Convert a given solar time to Emacs time format."
-;;   (let* ((fractional-hours (car solar-time))
-;;          (hours (floor fractional-hours))
-;;          (minutes (floor (* 60 (- fractional-hours hours))))
-;;          (time-list (append (list 0 minutes hours) (nthcdr 3 (decode-time (current-time)))))
-;;          (tz-offset-integer (string-to-number (car (cdr solar-time))))
-;;          (tz-adjustment (seconds-to-time (* tz-offset-integer 3600))))
-;;     (time-add (apply #'encode-time time-list) tz-adjustment)))
-
-
-
-(defun load-theme-based-on-time ()
-        "Load a theme based on the time of day."
-        (interactive)
-        (let ((hour (string-to-number (format-time-string "%H"))))
-        (cond
-         ((and (>= hour 6) (< hour 18))
-          (load-theme 'dichromacy))
-         (t
-          (load-theme 'wombat)))))
-
-;;run load-theme-based-on-time every 30 minutes
-;(load-theme-based-on-time)
-;(run-at-time "00:30" 1800 'load-theme-based-on-time)
 
 
 (custom-set-faces
