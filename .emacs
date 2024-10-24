@@ -24,6 +24,7 @@
  '(ansi-color-names-vector
    ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
  '(c-basic-offset 4)
+ '(chatgpt-model "gpt-4o")
  '(column-number-mode t)
  '(company-tooltip-align-annotations t)
  '(compilation-message-face 'default)
@@ -31,7 +32,6 @@
  '(cua-normal-cursor-color "#839496")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
- '(custom-enabled-themes '(wombat))
  '(custom-safe-themes
    '("f5b6be56c9de9fd8bdd42e0c05fecb002dedb8f48a5f00e769370e4517dde0e8" "3e200d49451ec4b8baa068c989e7fba2a97646091fd555eca0ee5a1386d56077" "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" default))
  '(desktop-restore-frames t)
@@ -72,6 +72,7 @@
  '(lsp-ui-doc-border "#93a1a1")
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
+ '(org-export-backends '(ascii html icalendar latex md odt))
  '(package-selected-packages
    '(web-mode tide json-mode jedi-direx ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
  '(pos-tip-background-color "#073642")
@@ -210,11 +211,19 @@
 (require 'use-package)
 
 (use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el"
-                   :files ("dist" "*.el"))
+  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :ensure t)
+;; you can utilize :map :hook and :config to customize copilot
+
 (add-hook 'prog-mode-hook 'copilot-mode)
 
+(use-package openai
+  :straight (openai :type git :host github :repo "emacs-openai/openai"))
+
+(setq openai-key (getenv "OPENAI_API_KEY"))
+
+(use-package chatgpt
+  :straight (chatgpt :type git :host github :repo "emacs-openai/chatgpt"))
 
 (use-package elpy
   :ensure t
@@ -290,12 +299,14 @@
 
   ;; Enable company mode
   (company-mode 1)
+
+  (setq tab-width 2)
 )
 
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
 ;;hooks
-(add-hook 'after-init-hook 'global-company-mode)
+;;(add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'python-mode-hook 'pylint-add-menu-items)
@@ -312,8 +323,6 @@
           (lambda ()
             (add-hook 'before-save-hook
                       'elpy-format-code nil t)))
-
-
 
 (setq-default fill-column 79)
 
@@ -336,14 +345,12 @@
    ((member (file-name-extension (buffer-file-name)) '("js" "jsx" "ts" "tsx"))
     (eslint))))
 
-(add-to-list 'auto-mode-alist '("\\.html\\'" . jinja2-mode))
+(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js-mode))
-
+(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js-mode))
 
 (global-set-key [f5] 'speedbar)
 (global-set-key [f6] 'copilot-accept-completion)
@@ -367,5 +374,62 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Anonymous Pro" :foundry "mlss" :slant normal :weight normal :height 118 :width normal)))))
+
+(load-theme 'wombat t)
+
+;; disable scroll bars
+(scroll-bar-mode -1)
+;; disable menu bar
+(menu-bar-mode -1)
+
+(require 'filenotify)
+
+(defvar my/kdeglobals-watcher nil "File watcher for KDE globals configuration file.")
+
+(defun my/switch-emacs-theme-based-on-kde ()
+  "Switch Emacs theme based on KDE dark or light theme settings."
+  (interactive)
+  (let* ((kde-config-file (expand-file-name "~/.config/kdeglobals"))
+         (kde-theme-setting (with-temp-buffer
+                              (insert-file-contents kde-config-file)
+                              (goto-char (point-min)) ; Ensure we are at the beginning of the buffer
+                              (if (re-search-forward "^LookAndFeelPackage=\\(.*\\)$" nil t)
+                                  (match-string 1)
+                                nil))))
+    (message "KDE theme setting read from file: %s" kde-theme-setting) ; Debug output
+    (if (and kde-theme-setting (string-match "org\.kde\.breezedark" kde-theme-setting))
+        (progn
+          (disable-theme 'dichromacy) ; Disable the light theme
+          (load-theme 'wombat t))     ; Load the dark theme
+      (progn
+        (disable-theme 'wombat)       ; Disable the dark theme
+        (load-theme 'dichromacy t))))) ; Load the light theme
+
+;; Add the file watcher
+(defun my/add-kdeglobals-watcher ()
+  "Add a watcher to monitor changes in kdeglobals."
+  (when my/kdeglobals-watcher
+    (file-notify-rm-watch my/kdeglobals-watcher)) ; Remove old watcher if it exists
+  (setq my/kdeglobals-watcher
+        (file-notify-add-watch
+         (expand-file-name "~/.config/kdeglobals")
+         '(change)
+         (lambda (event)
+           (message "File change event detected: %s" event) ; Debug output of the event
+           (let ((event-type (cadr event)))
+             (when (or (eq event-type 'changed)
+                       (eq event-type 'renamed)
+                       (eq event-type 'attribute-changed)) ; Handle both changed and renamed
+               (my/switch-emacs-theme-based-on-kde)))))))
+
+;; Add the file watcher
+(my/add-kdeglobals-watcher)
+
+;; Or bind it to a hotkey to manually trigger theme switch.
+(global-set-key (kbd "C-c t k") 'my/switch-emacs-theme-based-on-kde)
+
+
+;; Set current theme
+(my/switch-emacs-theme-based-on-kde)
 
 ;;; .emacs ends here
