@@ -28,6 +28,7 @@
  '(column-number-mode t)
  '(company-tooltip-align-annotations t)
  '(compilation-message-face 'default)
+ '(copilot-indent-offset-warning-disable t)
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#839496")
  '(cua-overwrite-cursor-color "#b58900")
@@ -48,6 +49,7 @@
  '(ema-timeout 120)
  '(fci-rule-color "#073642")
  '(flycheck-python-pylint-executable "pylint")
+ '(gptel-api-key 'openai-key-fn)
  '(highlight-changes-colors '("#d33682" "#6c71c4"))
  '(highlight-symbol-colors
    '("#3b6b40f432d7" "#07b9463d4d37" "#47a3341f358a" "#1d873c4056d5" "#2d87441c3362" "#43b7362e3199" "#061e418059d7"))
@@ -70,6 +72,7 @@
  '(indent-tabs-mode nil)
  '(ispell-dictionary "english")
  '(lsp-ui-doc-border "#93a1a1")
+ '(menu-bar-mode nil)
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(org-export-backends '(ascii html icalendar latex md odt))
@@ -81,10 +84,7 @@
  '(request-message-level -1)
  '(request-timeout 60)
  '(safe-local-variable-values
-   '((prettier-mode . t)
-     (eval prettier-mode t)
-     (sgml-basic-offset . 2)))
- '(show-paren-mode t)
+   '((sgml-basic-offset . 2)))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
  '(speedbar-frame-parameters
    '((minibuffer)
@@ -182,7 +182,7 @@
 ;; list the packages you want
 (defvar package-list
   '( use-package
-     material-theme
+     gptel
      all-the-icons
      company
      elpy
@@ -222,6 +222,10 @@
 
 (setq openai-key (getenv "OPENAI_API_KEY"))
 
+;;Define a function the returns the value of openai-key
+(defun openai-key-fn ()
+  openai-key)
+
 (use-package chatgpt
   :straight (chatgpt :type git :host github :repo "emacs-openai/chatgpt"))
 
@@ -229,6 +233,10 @@
   :ensure t
   :init
   (elpy-enable))
+
+(with-eval-after-load 'elpy
+  (define-key elpy-mode-map (kbd "C-c RET") nil))
+
 
 (use-package flycheck
   :ensure t
@@ -357,6 +365,17 @@
 (global-set-key [f9] 'lint-current-buffer)
 (global-set-key [f8] 'kill-current-buffer)
 (global-set-key [f12] 'toggle-truncate-lines)
+(global-set-key (kbd "C-c RET") 'gptel-send)
+(global-set-key (kbd "C-c C-m") 'gptel-send)
+
+;; Ensure gptel-send is available in the relevant modes
+(dolist (hook '(text-mode-hook
+                prog-mode-hook
+                python-mode-hook
+                markdown-mode-hook
+                org-mode-hook)) ;; Add any other mode hooks
+  (add-hook hook (lambda ()
+                   (local-set-key (kbd "C-c RET") 'gptel-send))))
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -373,7 +392,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Anonymous Pro" :foundry "mlss" :slant normal :weight normal :height 118 :width normal)))))
+ '(default ((t (:family "Anonymous Pro" :foundry "mlss" :slant normal :weight regular :height 118 :width normal)))))
 
 (load-theme 'wombat t)
 
@@ -428,8 +447,22 @@
 ;; Or bind it to a hotkey to manually trigger theme switch.
 (global-set-key (kbd "C-c t k") 'my/switch-emacs-theme-based-on-kde)
 
-
 ;; Set current theme
 (my/switch-emacs-theme-based-on-kde)
+
+;; Custom utility functions
+(defun sort-lines-by-length (reverse beg end)
+  "Sort lines by length."
+  (interactive "P\nr")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (goto-char (point-min))
+      (let ;; To make `end-of-line' and etc. to ignore fields.
+          ((inhibit-field-text-motion t))
+        (sort-subr reverse 'forward-line 'end-of-line nil nil
+                   (lambda (l1 l2)
+                     (apply #'< (mapcar (lambda (range) (- (cdr range) (car range)))
+                                        (list l1 l2)))))))))
 
 ;;; .emacs ends here
