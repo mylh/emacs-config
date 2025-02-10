@@ -40,11 +40,6 @@
  '(desktop-save-mode t)
  '(display-time-mode t)
  '(ein:output-area-inlined-images t)
- '(elpy-formatter 'black)
- '(elpy-modules
-   '(elpy-module-company elpy-module-eldoc elpy-module-folding elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults))
- '(elpy-rpc-python-command "python3")
- '(elpy-rpc-timeout 5)
  '(ema-model-name "gpt-4o")
  '(ema-timeout 120)
  '(fci-rule-color "#073642")
@@ -77,14 +72,13 @@
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(org-export-backends '(ascii html icalendar latex md odt))
  '(package-selected-packages
-   '(web-mode tide json-mode jedi-direx ein all-the-icons markdown-mode elpy use-package docker-compose-mode dockerfile-mode go-mode flycheck-pyflakes flycheck-pycheckers pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
+   '(web-mode tide json-mode ein all-the-icons markdown-mode use-package docker-compose-mode dockerfile-mode go-mode pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(request-log-level 'warn)
  '(request-message-level -1)
  '(request-timeout 60)
- '(safe-local-variable-values
-   '((sgml-basic-offset . 2)))
+ '(safe-local-variable-values '((sgml-basic-offset . 2)))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
  '(speedbar-frame-parameters
    '((minibuffer)
@@ -182,22 +176,35 @@
 ;; list the packages you want
 (defvar package-list
   '( use-package
-     gptel
      all-the-icons
      company
-     elpy
-     flycheck
      docker-compose-mode
      dockerfile-mode
+     ein
+     filenotify
+     fill-column-indicator
+     flycheck
+     flymake-eslint
      go-mode
-     pylint
-     jinja2-mode
+     gptel
      js2-mode
-     typescript-mode
      json-mode
      less-css-mode
+     markdown-mode
+     pylint
+     request
+     ruff-format
+     tide
+     typescript-mode
+     use-package
+     virtualenvwrapper
+     web-mode
      yaml-mode
-     request))
+     lsp-mode
+     magit
+     ruff-format
+     lsp-pyright
+ ))
 
 ;; fetch the list of packages available
 (unless package-archive-contents
@@ -226,26 +233,13 @@
 (defun openai-key-fn ()
   openai-key)
 
-(use-package chatgpt
-  :straight (chatgpt :type git :host github :repo "emacs-openai/chatgpt"))
-
-(use-package elpy
-  :ensure t
-  :init
-  (elpy-enable))
-
-(with-eval-after-load 'elpy
-  (define-key elpy-mode-map (kbd "C-c RET") nil))
-
+;; (use-package chatgpt
+;;   :straight (chatgpt :type git :host github :repo "emacs-openai/chatgpt"))
 
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
 
-;; Disable Flymake and Enable Flycheck
-(when (require 'flycheck nil t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
 
 (require 'ido)
 (require 'company)
@@ -270,7 +264,8 @@
   (company-mode +1))
 
 ;; if you use typescript-mode
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;;(add-hook 'typescript-mode-hook #'setup-tide-mode)
+
 ;; if you use treesitter based typescript-ts-mode (emacs 29+)
 (add-hook 'typescript-ts-mode-hook #'setup-tide-mode)
 
@@ -278,7 +273,7 @@
 (setq company-tooltip-align-annotations t)
 
 ;; formats the buffer before saving
-;;(add-hook 'before-save-hook 'tide-format-before-save)
+(add-hook 'before-save-hook 'tide-format-before-save)
 
 
 ; complete by copilot first, then company-mode
@@ -317,20 +312,11 @@
 ;;(add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'python-mode-hook 'pylint-add-menu-items)
-(add-hook 'python-mode-hook 'pylint-add-key-bindings)
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 (add-hook 'python-mode-hook 'hs-minor-mode)
-(add-hook 'tsx-ts-mode-hook #'setup-tide-mode)
-;;(add-hook 'typescript-mode-hook #'setup-tide-mode)
-;;(add-hook 'js2-mode-hook #'setup-tide-mode)
 (add-hook 'go-mode-hook
           (lambda ()
             (add-hook 'before-save-hook 'gofmt-before-save)))
-(add-hook 'elpy-mode-hook
-          (lambda ()
-            (add-hook 'before-save-hook
-                      'elpy-format-code nil t)))
 
 (setq-default fill-column 79)
 
@@ -345,13 +331,43 @@
     (display-buffer output-buffer '(display-buffer-pop-up-window (nil (allow-no-window . t)))))) ; open in new window
 ;;    (switch-to-buffer output-buffer)))
 
+
+(defun my/run-ruff ()
+  "Run Ruff inside a Docker container if environment variables are set; otherwise, run it locally."
+  (interactive)
+  (let* ((container-name (getenv "CONTAINER_NAME"))
+         (project-root (getenv "PROJECT_ROOT"))
+         (container-root (getenv "CONTAINER_ROOT"))
+         (file-path buffer-file-name)
+         (mapped-file-path (if (and project-root container-root file-path)
+                               (replace-regexp-in-string (regexp-quote project-root) container-root file-path)
+                             file-path)))
+    (if (and container-name project-root container-root)
+        (progn
+          (message "Running Ruff inside container: %s" container-name)
+          (compile (format "docker exec %s ruff check %s"
+                           (shell-quote-argument container-name)
+                           (shell-quote-argument mapped-file-path))))
+      (progn
+        (message "Running Ruff locally")
+        (compile (format "ruff check %s" (shell-quote-argument file-path)))))))
+
+
 (defun lint-current-buffer ()
   (interactive)
   (cond
    ((string= "py" (file-name-extension (buffer-file-name)))
-    (pylint))
+    (my/run-ruff))
    ((member (file-name-extension (buffer-file-name)) '("js" "jsx" "ts" "tsx"))
     (eslint))))
+
+;; (defun lint-current-buffer ()
+;;   (interactive)
+;;   (cond
+;;    ((string= "py" (file-name-extension (buffer-file-name)))
+;;     (pylint))
+;;    ((member (file-name-extension (buffer-file-name)) '("js" "jsx" "ts" "tsx"))
+;;     (eslint))))
 
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.less\\'" . less-css-mode))
@@ -381,6 +397,7 @@
 (put 'upcase-region 'disabled nil)
 
 (put 'pylint-command 'safe-local-variable (lambda (_) t))
+(put 'ruff-format-command 'safe-local-variable (lambda (_) t))
 (put 'flycheck-python-pylint-executable 'safe-local-variable (lambda (_) t))
 (put 'flycheck-javascript-eslint-executable 'safe-local-variable (lambda (_) t))
 (put 'python-shell-interpreter 'safe-local-variable (lambda (_) t))
@@ -464,5 +481,32 @@
                    (lambda (l1 l2)
                      (apply #'< (mapcar (lambda (range) (- (cdr range) (car range)))
                                         (list l1 l2)))))))))
+
+;; (with-eval-after-load 'lsp-mode
+;;   (setq lsp-ruff-server-command
+;;         (let ((container-name (getenv "CONTAINER_NAME")))
+;;           (if container-name
+;;               (list "docker" "exec" "-i" container-name "ruff" "server")
+;;             (list "ruff" "server"))))
+
+;;   (add-hook 'lsp-mode-hook
+;;             (lambda ()
+;;               (unless (lsp-find-workspace 'ruff-lsp)
+;;                 (lsp-register-client
+;;                  (make-lsp-client
+;;                   :new-connection (lsp-stdio-connection lsp-ruff-server-command)
+;;                   :major-modes '(python-mode)
+;;                   :server-id 'ruff-lsp
+;;                   :notification-handlers (ht ("textDocument/formatting" (lambda (_w _p) (lsp-format-buffer))))))))))
+
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp))))  ;; Start LSP
+
+(add-hook 'python-mode-hook #'lsp)
+
+(add-hook 'python-mode-hook 'ruff-format-on-save-mode)
 
 ;;; .emacs ends here
