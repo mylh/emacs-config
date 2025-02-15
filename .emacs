@@ -67,7 +67,6 @@
  '(indent-tabs-mode nil)
  '(ispell-dictionary "english")
  '(lsp-ui-doc-border "#93a1a1")
- '(menu-bar-mode nil)
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(org-export-backends '(ascii html icalendar latex md odt))
@@ -204,7 +203,15 @@
      magit
      ruff-format
      lsp-pyright
- ))
+     treemacs
+     vertico
+     ))
+
+;; configure treemacs to disable auto follow by default
+(use-package treemacs
+  :ensure t
+  :config
+  (setq treemacs-follow-mode nil))
 
 ;; fetch the list of packages available
 (unless package-archive-contents
@@ -217,11 +224,33 @@
 
 (require 'use-package)
 
+;; Disable startup message
+(setq inhibit-startup-message t)
+
+;; Disable UI clutter
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+;; Enable line numbers only in prog-mode buffers
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+;; Enable smooth scrolling
+(setq scroll-conservatively 101)
+
+(show-paren-mode 1)
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
+(use-package company
+  :hook (after-init . global-company-mode)) ;; Auto-completion
+
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :ensure t)
 ;; you can utilize :map :hook and :config to customize copilot
-
 (add-hook 'prog-mode-hook 'copilot-mode)
 
 (use-package openai
@@ -240,13 +269,30 @@
   :ensure t
   :init (global-flycheck-mode))
 
+;; Enable ido mode gloabally
+(use-package ido
+  :config
+  (ido-mode 1))
 
-(require 'ido)
-(require 'company)
-(ido-mode t)
-(show-paren-mode 1)
-(savehist-mode 1)
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode 1))
 
+;; Enable vertico
+(use-package vertico
+  :custom
+  ;; (vertico-scroll-margin 0) ;; Different scroll margin
+  ;; (vertico-count 20) ;; Show more candidates
+  (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+  ;; (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
+  :config
+  (vertico-mode)
+  (message "Vertico mode enabled")
+  )
+
+(use-package ripgrep
+  :ensure t)
 
 ;; Tide setup
 ;; https://github.com/ananthakumaran/tide
@@ -297,12 +343,10 @@
 (load "~/Projects/ema/ema.el")
 
 (defun my-go-mode-hook ()
-  ;; Set up godef jump key bindings
-  (local-set-key (kbd "M-.") 'godef-jump)
-
+  "Set up godef jump key bindings."
+  ;;(local-set-key (kbd "M-.") 'godef-jump)
   ;; Enable company mode
   (company-mode 1)
-
   (setq tab-width 2)
 )
 
@@ -376,7 +420,8 @@
 (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js-mode))
 
-(global-set-key [f5] 'speedbar)
+(global-set-key [f5] 'treemacs)
+;;(global-set-key [f5] 'sppedbar)
 (global-set-key [f6] 'copilot-accept-completion)
 (global-set-key [f9] 'lint-current-buffer)
 (global-set-key [f8] 'kill-current-buffer)
@@ -410,13 +455,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Anonymous Pro" :foundry "mlss" :slant normal :weight regular :height 118 :width normal)))))
-
-(load-theme 'wombat t)
-
-;; disable scroll bars
-(scroll-bar-mode -1)
-;; disable menu bar
-(menu-bar-mode -1)
 
 (require 'filenotify)
 
@@ -499,14 +537,27 @@
 ;;                   :server-id 'ruff-lsp
 ;;                   :notification-handlers (ht ("textDocument/formatting" (lambda (_w _p) (lsp-format-buffer))))))))))
 
+(use-package lsp-mode
+  :commands lsp
+  :init
+  (setq lsp-keymap-prefix "C-c l") ;; LSP keybindings
+  :hook ((python-mode . lsp)
+         (go-mode . lsp)
+         (js2-mode . lsp)))
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode) ;; UI enhancements for LSP
+
 (use-package lsp-pyright
   :ensure t
   :hook (python-mode . (lambda ()
                          (require 'lsp-pyright)
                          (lsp))))  ;; Start LSP
 
-(add-hook 'python-mode-hook #'lsp)
-
+;; (add-hook 'python-mode-hook #'lsp)
 (add-hook 'python-mode-hook 'ruff-format-on-save-mode)
+;; Enable lsp for golang
+;; (add-hook 'go-mode-hook #'lsp)
 
 ;;; .emacs ends here
