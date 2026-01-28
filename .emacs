@@ -236,10 +236,9 @@
 ;;   :hook (after-init . global-company-mode)) ;; Auto-completion
 
 (use-package copilot
-  :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-  :ensure t)
-;; you can utilize :map :hook and :config to customize copilot
-(add-hook 'prog-mode-hook 'copilot-mode)
+  :vc (:url "https://github.com/copilot-emacs/copilot.el"
+            :rev :newest
+            :branch "main"))
 
 (use-package openai
   :straight (openai :type git :host github :repo "emacs-openai/openai"))
