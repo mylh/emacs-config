@@ -34,7 +34,13 @@
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
  '(custom-safe-themes
-   '("f5b6be56c9de9fd8bdd42e0c05fecb002dedb8f48a5f00e769370e4517dde0e8" "3e200d49451ec4b8baa068c989e7fba2a97646091fd555eca0ee5a1386d56077" "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" default))
+   '("7964b513f8a2bb14803e717e0ac0123f100fb92160dcf4a467f530868ebaae3e"
+     "6a5584ee8de384f2d8b1a1c30ed5b8af1d00adcbdcd70ba1967898c265878acf"
+     "f5b6be56c9de9fd8bdd42e0c05fecb002dedb8f48a5f00e769370e4517dde0e8"
+     "3e200d49451ec4b8baa068c989e7fba2a97646091fd555eca0ee5a1386d56077"
+     "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c"
+     "f149d9986497e8877e0bd1981d1bef8c8a6d35be7d82cba193ad7e46f0989f6a"
+     "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" default))
  '(desktop-restore-frames t)
  '(desktop-save 'ask-if-new)
  '(desktop-save-mode t)
@@ -44,20 +50,15 @@
  '(ema-timeout 120)
  '(fci-rule-color "#073642")
  '(flycheck-python-pylint-executable "pylint")
- '(gptel-api-key 'openai-key-fn)
  '(highlight-changes-colors '("#d33682" "#6c71c4"))
+ '(highlight-indent-guides-method 'character)
  '(highlight-symbol-colors
-   '("#3b6b40f432d7" "#07b9463d4d37" "#47a3341f358a" "#1d873c4056d5" "#2d87441c3362" "#43b7362e3199" "#061e418059d7"))
+   '("#3b6b40f432d7" "#07b9463d4d37" "#47a3341f358a" "#1d873c4056d5" "#2d87441c3362" "#43b7362e3199"
+     "#061e418059d7"))
  '(highlight-symbol-foreground-color "#93a1a1")
  '(highlight-tail-colors
-   '(("#073642" . 0)
-     ("#5b7300" . 20)
-     ("#007d76" . 30)
-     ("#0061a8" . 50)
-     ("#866300" . 60)
-     ("#992700" . 70)
-     ("#a00559" . 85)
-     ("#073642" . 100)))
+   '(("#073642" . 0) ("#5b7300" . 20) ("#007d76" . 30) ("#0061a8" . 50) ("#866300" . 60)
+     ("#992700" . 70) ("#a00559" . 85) ("#073642" . 100)))
  '(hl-bg-colors
    '("#866300" "#992700" "#a7020a" "#a00559" "#243e9b" "#0061a8" "#007d76" "#5b7300"))
  '(hl-fg-colors
@@ -71,22 +72,22 @@
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(org-export-backends '(ascii html icalendar latex md odt))
  '(package-selected-packages
-   '(web-mode tide json-mode ein all-the-icons markdown-mode use-package docker-compose-mode dockerfile-mode go-mode pylint virtualenvwrapper python-mode jedi yaml-mode less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
+   '(web-mode tide json-mode ein all-the-icons markdown-mode use-package docker-compose-mode
+              dockerfile-mode go-mode pylint virtualenvwrapper python-mode jedi yaml-mode
+              less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
+ '(prog-mode-hook
+   '(#[nil ((local-set-key (kbd "C-c RET") 'gptel-send)) nil] copilot-mode display-line-numbers-mode
+     highlight-indent-guides-mode))
  '(request-log-level 'warn)
  '(request-message-level -1)
  '(request-timeout 60)
- '(safe-local-variable-values '((sgml-basic-offset . 2)))
+ '(safe-local-variable-values '((eval prettier-mode t) (sgml-basic-offset . 2)))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
  '(speedbar-frame-parameters
-   '((minibuffer)
-     (width . 25)
-     (border-width . 0)
-     (menu-bar-lines . 0)
-     (tool-bar-lines . 0)
-     (unsplittable . t)
-     (left-fringe . 0)))
+   '((minibuffer) (width . 25) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0)
+     (unsplittable . t) (left-fringe . 0)))
  '(speedbar-show-unknown-files t)
  '(term-default-bg-color "#002b36")
  '(term-default-fg-color "#839496")
@@ -94,30 +95,17 @@
  '(vc-annotate-background nil)
  '(vc-annotate-background-mode nil)
  '(vc-annotate-color-map
-   '((20 . "#B71C1C")
-     (40 . "#FF5722")
-     (60 . "#FFA000")
-     (80 . "#558b2f")
-     (100 . "#00796b")
-     (120 . "#2196f3")
-     (140 . "#4527A0")
-     (160 . "#B71C1C")
-     (180 . "#FF5722")
-     (200 . "#FFA000")
-     (220 . "#558b2f")
-     (240 . "#00796b")
-     (260 . "#2196f3")
-     (280 . "#4527A0")
-     (300 . "#B71C1C")
-     (320 . "#FF5722")
-     (340 . "#FFA000")
-     (360 . "#558b2f")))
+   '((20 . "#B71C1C") (40 . "#FF5722") (60 . "#FFA000") (80 . "#558b2f") (100 . "#00796b")
+     (120 . "#2196f3") (140 . "#4527A0") (160 . "#B71C1C") (180 . "#FF5722") (200 . "#FFA000")
+     (220 . "#558b2f") (240 . "#00796b") (260 . "#2196f3") (280 . "#4527A0") (300 . "#B71C1C")
+     (320 . "#FF5722") (340 . "#FFA000") (360 . "#558b2f")))
  '(vc-annotate-very-old-color nil)
  '(web-mode-code-indent-offset 2)
  '(web-mode-css-indent-offset 2)
  '(web-mode-markup-indent-offset 2)
  '(weechat-color-list
-   '(unspecified "#002b36" "#073642" "#a7020a" "#dc322f" "#5b7300" "#859900" "#866300" "#b58900" "#0061a8" "#268bd2" "#a00559" "#d33682" "#007d76" "#2aa198" "#839496" "#657b83"))
+   '(unspecified "#002b36" "#073642" "#a7020a" "#dc322f" "#5b7300" "#859900" "#866300" "#b58900"
+                 "#0061a8" "#268bd2" "#a00559" "#d33682" "#007d76" "#2aa198" "#839496" "#657b83"))
  '(xterm-color-names
    ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"])
  '(xterm-color-names-bright
@@ -244,8 +232,8 @@
   :ensure t
   :init (doom-modeline-mode 1))
 
-(use-package company
-  :hook (after-init . global-company-mode)) ;; Auto-completion
+;; (use-package company
+;;   :hook (after-init . global-company-mode)) ;; Auto-completion
 
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
@@ -319,7 +307,7 @@
 (setq company-tooltip-align-annotations t)
 
 ;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
+;;(add-hook 'before-save-hook 'tide-format-before-save)
 
 
 ; complete by copilot first, then company-mode
@@ -362,7 +350,7 @@
           (lambda ()
             (add-hook 'before-save-hook 'gofmt-before-save)))
 
-(setq-default fill-column 79)
+(setq-default fill-column 100)
 
 (defun eslint ()
   (interactive)
@@ -438,6 +426,9 @@
   (add-hook hook (lambda ()
                    (local-set-key (kbd "C-c RET") 'gptel-send))))
 
+(gptel-make-anthropic "Claude" :key gptel-api-key :stream t )
+(gptel-make-gemini "Gemini" :key gptel-api-key  :stream t)
+
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
@@ -454,7 +445,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Anonymous Pro" :foundry "mlss" :slant normal :weight regular :height 118 :width normal)))))
+ '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight regular :height 118 :width normal)))))
 
 (require 'filenotify)
 
@@ -542,12 +533,29 @@
   :init
   (setq lsp-keymap-prefix "C-c l") ;; LSP keybindings
   :hook ((python-mode . lsp)
+         (typescript-mode . lsp)
+         (js-mode . lsp)
          (go-mode . lsp)
+         (terraform-mode . lsp)
          (js2-mode . lsp)))
 
-(use-package lsp-ui
+(use-package prettier
   :ensure t
-  :commands lsp-ui-mode) ;; UI enhancements for LSP
+  :hook ((typescript-mode . prettier-mode)
+         (js-mode . prettier-mode)))
+
+(add-hook 'typescript-mode-hook 'prettier-mode)
+
+(add-hook 'before-save-hook
+          (lambda ()
+            (when (or (derived-mode-p 'typescript-mode)
+                      (derived-mode-p 'js-mode))
+              (prettier-prettify))))
+
+
+;; (use-package lsp-ui
+;;   :ensure t
+;;   :commands lsp-ui-mode) ;; UI enhancements for LSP
 
 (use-package lsp-pyright
   :ensure t
@@ -559,5 +567,16 @@
 (add-hook 'python-mode-hook 'ruff-format-on-save-mode)
 ;; Enable lsp for golang
 ;; (add-hook 'go-mode-hook #'lsp)
+
+;; Bind magit-section-toggle to TAB
+(with-eval-after-load 'magit
+  (define-key magit-mode-map (kbd "<tab>") 'magit-section-toggle))
+
+(use-package terraform-mode
+  :ensure t
+  :mode "\\.tf\\'"
+  )
+
+(setq org-agenda-files '("~/MobileSync/org/"))
 
 ;;; .emacs ends here
