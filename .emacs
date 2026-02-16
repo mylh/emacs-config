@@ -1,19 +1,3 @@
-;; Install straight.el
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-(straight-use-package 'use-package)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -68,13 +52,19 @@
  '(indent-tabs-mode nil)
  '(ispell-dictionary "english")
  '(lsp-ui-doc-border "#93a1a1")
+ '(menu-bar-mode nil)
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(org-export-backends '(ascii html icalendar latex md odt))
  '(package-selected-packages
-   '(web-mode tide json-mode ein all-the-icons markdown-mode use-package docker-compose-mode
-              dockerfile-mode go-mode pylint virtualenvwrapper python-mode jedi yaml-mode
-              less-css-mode js2-mode jinja2-mode flycheck fill-column-indicator))
+   '(all-the-icons apache-mode bar-cursor bm boxquote browse-kill-ring claude-code color-theme-modern
+                   company copilot csv-mode diminish docker-compose-mode dockerfile-mode
+                   doom-modeline doom-themes eat ein eproject fill-column-indicator flymake-eslint
+                   folding go-mode gptel graphviz-dot-mode highlight-indent-guides
+                   highlight-indentation htmlize initsplit jinja2-mode js2-mode json-mode
+                   lsp-pyright lsp-ui magit popup prettier prettier-js protobuf-mode pylint pyvenv
+                   ripgrep ruff-format session tabbar terraform-mode tide treemacs typescript-mode
+                   vertico virtualenvwrapper vterm web-mode yasnippet))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(prog-mode-hook
@@ -153,47 +143,81 @@
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
-
+;; add melpa to package archives, as vterm is on melpa:
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/"))
-
 (package-initialize)
 
 ;; list the packages you want
 (defvar package-list
-  '( use-package
+  '(
      all-the-icons
+     apache-mode
+     bar-cursor
+     bm
+     boxquote
+     browse-kill-ring
+     claude-code
+     color-theme-modern
      company
+     copilot
+     csv-mode
+     diminish
      docker-compose-mode
      dockerfile-mode
+     doom-modeline
+     doom-themes
+     eat
      ein
+     eproject
      filenotify
      fill-column-indicator
      flycheck
      flymake-eslint
+     folding
      go-mode
      gptel
+     graphviz-dot-mode
+     highlight-indent-guides
+     highlight-indentation
+     htmlize
+     initsplit
+     jinja2-mode
      js2-mode
      json-mode
      less-css-mode
+     lsp-mode
+     lsp-pyright
+     lsp-ui
+     magit
      markdown-mode
+     popup
+     prettier
+     prettier-js
+     protobuf-mode
      pylint
+     pyvenv
      request
+     ripgrep
      ruff-format
+     session
+     tabbar
+     terraform-mode
      tide
+     treemacs
      typescript-mode
      use-package
+     vertico
      virtualenvwrapper
+     vterm
      web-mode
      yaml-mode
-     lsp-mode
-     magit
-     ruff-format
-     lsp-pyright
-     treemacs
-     vertico
+     yasnippet
+     use-package
      ))
+
+(require 'use-package)
 
 ;; configure treemacs to disable auto follow by default
 (use-package treemacs
@@ -209,8 +233,6 @@
 (dolist (package package-list)
   (unless (package-installed-p package)
     (package-install package)))
-
-(require 'use-package)
 
 ;; Disable startup message
 (setq inhibit-startup-message t)
@@ -240,17 +262,12 @@
             :rev :newest
             :branch "main"))
 
-(use-package openai
-  :straight (openai :type git :host github :repo "emacs-openai/openai"))
-
 (setq openai-key (getenv "OPENAI_API_KEY"))
 
 ;;Define a function the returns the value of openai-key
 (defun openai-key-fn ()
   openai-key)
 
-;; (use-package chatgpt
-;;   :straight (chatgpt :type git :host github :repo "emacs-openai/chatgpt"))
 
 (use-package flycheck
   :ensure t
@@ -327,7 +344,8 @@
 
 
 ;; ChatGPT emacs assistant
-(load "~/Projects/ema/ema.el")
+(use-package claude-code :ensure t
+  :vc (:url "https://github.com/mylh/ema" :rev :newest))
 
 (defun my-go-mode-hook ()
   "Set up godef jump key bindings."
@@ -444,7 +462,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Ubuntu Mono" :foundry "DAMA" :slant normal :weight regular :height 118 :width normal)))))
+ '(default ((t (:family "Hack" :foundry "SRC" :slant normal :weight regular :height 110 :width normal)))))
 
 (require 'filenotify)
 
@@ -510,23 +528,6 @@
                      (apply #'< (mapcar (lambda (range) (- (cdr range) (car range)))
                                         (list l1 l2)))))))))
 
-;; (with-eval-after-load 'lsp-mode
-;;   (setq lsp-ruff-server-command
-;;         (let ((container-name (getenv "CONTAINER_NAME")))
-;;           (if container-name
-;;               (list "docker" "exec" "-i" container-name "ruff" "server")
-;;             (list "ruff" "server"))))
-
-;;   (add-hook 'lsp-mode-hook
-;;             (lambda ()
-;;               (unless (lsp-find-workspace 'ruff-lsp)
-;;                 (lsp-register-client
-;;                  (make-lsp-client
-;;                   :new-connection (lsp-stdio-connection lsp-ruff-server-command)
-;;                   :major-modes '(python-mode)
-;;                   :server-id 'ruff-lsp
-;;                   :notification-handlers (ht ("textDocument/formatting" (lambda (_w _p) (lsp-format-buffer))))))))))
-
 (use-package lsp-mode
   :commands lsp
   :init
@@ -562,6 +563,7 @@
                          (require 'lsp-pyright)
                          (lsp))))  ;; Start LSP
 
+
 ;; (add-hook 'python-mode-hook #'lsp)
 (add-hook 'python-mode-hook 'ruff-format-on-save-mode)
 ;; Enable lsp for golang
@@ -576,6 +578,32 @@
   :mode "\\.tf\\'"
   )
 
-(setq org-agenda-files '("~/MobileSync/org/"))
+(use-package monet
+  :vc (:url "https://github.com/stevemolitor/monet" :rev :newest))
+
+;; install required inheritenv dependency:
+(use-package inheritenv
+  :vc (:url "https://github.com/purcell/inheritenv" :rev :newest))
+
+;; for eat terminal backend:
+(use-package eat :ensure t)
+
+;; for vterm terminal backend:
+(use-package vterm :ensure t)
+
+;; install claude-code.el
+(use-package claude-code :ensure t
+  :vc (:url "https://github.com/stevemolitor/claude-code.el" :rev :newest)
+  :config
+  ;; optional IDE integration with Monet
+  (add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
+  (monet-mode 1)
+
+  (claude-code-mode)
+  :bind-keymap ("C-c c" . claude-code-command-map)
+
+  ;; Optionally define a repeat map so that "M" will cycle thru Claude auto-accept/plan/confirm modes after invoking claude-code-cycle-mode / C-c M.
+  :bind
+  (:repeat-map my-claude-code-map ("M" . claude-code-cycle-mode)))
 
 ;;; .emacs ends here
