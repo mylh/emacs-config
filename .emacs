@@ -10,7 +10,7 @@
  '(c-basic-offset 4)
  '(chatgpt-model "gpt-4o")
  '(column-number-mode t)
- '(company-tooltip-align-annotations t)
+ '(company-tooltip-align-annotations t t)
  '(compilation-message-face 'default)
  '(copilot-indent-offset-warning-disable t)
  '(cua-global-mark-cursor-color "#2aa198")
@@ -56,20 +56,12 @@
  '(nrepl-message-colors
    '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
  '(org-export-backends '(ascii html icalendar latex md odt))
- '(package-selected-packages
-   '(all-the-icons apache-mode bar-cursor bm boxquote browse-kill-ring claude-code color-theme-modern
-                   company copilot csv-mode diminish docker-compose-mode dockerfile-mode
-                   doom-modeline doom-themes eat ein eproject fill-column-indicator flymake-eslint
-                   folding go-mode gptel graphviz-dot-mode highlight-indent-guides
-                   highlight-indentation htmlize initsplit jinja2-mode js2-mode json-mode
-                   lsp-pyright lsp-ui magit popup prettier prettier-js protobuf-mode pylint pyvenv
-                   ripgrep ruff-format session tabbar terraform-mode tide treemacs typescript-mode
-                   vertico virtualenvwrapper vterm web-mode yasnippet))
+ '(package-selected-packages nil)
+ '(package-vc-selected-packages
+   '((claude-code :url "https://github.com/stevemolitor/claude-code.el")
+     (ema :url "https://github.com/mylh/ema") (monet :url "https://github.com/stevemolitor/monet")))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
- '(prog-mode-hook
-   '(#[nil ((local-set-key (kbd "C-c RET") 'gptel-send)) nil] copilot-mode display-line-numbers-mode
-     highlight-indent-guides-mode))
  '(request-log-level 'warn)
  '(request-message-level -1)
  '(request-timeout 60)
@@ -153,13 +145,6 @@
 (defvar package-list
   '(
      all-the-icons
-     apache-mode
-     bar-cursor
-     bm
-     boxquote
-     browse-kill-ring
-     claude-code
-     color-theme-modern
      company
      copilot
      csv-mode
@@ -344,7 +329,7 @@
 
 
 ;; ChatGPT emacs assistant
-(use-package claude-code :ensure t
+(use-package ema :ensure t
   :vc (:url "https://github.com/mylh/ema" :rev :newest))
 
 (defun my-go-mode-hook ()
