@@ -573,6 +573,8 @@
 (with-eval-after-load 'magit
   (define-key magit-mode-map (kbd "<tab>") 'magit-section-toggle))
 
+(define-key global-map (kbd "C-x g") 'magit-status)
+
 (use-package terraform-mode
   :ensure t
   :mode "\\.tf\\'"
