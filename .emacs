@@ -58,8 +58,9 @@
  '(org-export-backends '(ascii html icalendar latex md odt))
  '(package-selected-packages nil)
  '(package-vc-selected-packages
-   '((claude-code :url "https://github.com/stevemolitor/claude-code.el")
-     (ema :url "https://github.com/mylh/ema") (monet :url "https://github.com/stevemolitor/monet")))
+   '((ema :url "https://github.com/mylh/ema")
+     (claude-code :url "https://github.com/stevemolitor/claude-code.el")
+     (monet :url "https://github.com/stevemolitor/monet")))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(request-log-level 'warn)
@@ -512,17 +513,20 @@
                    (lambda (l1 l2)
                      (apply #'< (mapcar (lambda (range) (- (cdr range) (car range)))
                                         (list l1 l2)))))))))
-
 (use-package lsp-mode
   :commands lsp
   :init
-  (setq lsp-keymap-prefix "C-c l") ;; LSP keybindings
-  :hook ((python-mode . lsp)
+  (setq lsp-keymap-prefix "C-c l")
+  :custom
+  (lsp-keep-workspace-alive nil)   ; kill LSP server when last buffer closes
+  (lsp-auto-guess-root nil)        ; don't auto-register workspace roots
+  (lsp-session-file nil)           ; don't persist workspace folders across sessions
+  :hook ((python-mode     . lsp)
          (typescript-mode . lsp)
-         (js-mode . lsp)
-         (go-mode . lsp)
-         (terraform-mode . lsp)
-         (js2-mode . lsp)))
+         (js-mode         . lsp)
+         (go-mode         . lsp)
+         (terraform-mode  . lsp)
+         (js2-mode        . lsp)))
 
 (use-package prettier
   :ensure t
@@ -592,5 +596,16 @@
   ;; Optionally define a repeat map so that "M" will cycle thru Claude auto-accept/plan/confirm modes after invoking claude-code-cycle-mode / C-c M.
   :bind
   (:repeat-map my-claude-code-map ("M" . claude-code-cycle-mode)))
+
+;; claude notifications
+(defun my-claude-notify-with-sound (title message)
+  "Display a Linux notification with sound."
+  (when (executable-find "notify-send")
+    (call-process "notify-send" nil nil nil title message))
+  ;; Play sound if paplay is available
+  (when (executable-find "paplay")
+    (call-process "paplay" nil nil nil "/usr/share/sounds/freedesktop/stereo/bell.oga")))
+
+(setq claude-code-notification-function #'my-claude-notify-with-sound)
 
 ;;; .emacs ends here
